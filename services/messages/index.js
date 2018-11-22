@@ -17,16 +17,15 @@ module.exports = async (fastify, opts) => {
 		if (req.query.speakers_count) speakercount = _.toInteger(req.query.speakers_count)
 		
 		const foundmessages = await cursor.find({$and: [
-		{$or:[	{"English": searchregex},	{"Japanese": searchregex}	]},
+		{$or:[	{"English": searchregex}, {"Japanese": searchregex}	]},
 		{"Filename": filenameregex},
-		//{"nameIDs": {$size: {$ifNull:[req.query.speakers_count, []] }} }
 		//{"chapter": chapterregex} commented until database will be cleaned up
 		]})
 		
 		const count = await foundmessages.count();
 		const result = await foundmessages.sort({[sortingstring]: sortorder}).skip((limit * (page - 1)) - (page-1)).limit(limit).toArray();// we take all items, sort them, limit them, skip a limited and return array
 		const info = { current_page: page, all_pages: _.ceil(count / limit), all_results: count }; // data for pagination
-		res.send({ info, regex: speakercount, messages: result }) // send result
+		res.send({ info, messages: result }) // send result
 	})
   
 
