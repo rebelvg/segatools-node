@@ -32,19 +32,28 @@ module.exports = async(fastify, opts) => {
         if (req.query.names) {
             console.log(typeof(req.query.names))
             if (typeof(req.query.names) === "object") { //if more than one name
-                let speakers = []
-                speakers = req.query.names.map(function(element) {
-                    let spkrarray = []
-                    for (let i = 0; i < names.length; i++) { if (names[i].English === element.replace(/^\s/g, '').replace(/\s$/g, '')) spkrarray.push(i) }
-                    return spkrarray
+                var speakers = { "$and": [] }
+                req.query.names.forEach(function(element) {
+                    let spkrarray = { "$or": [] }
+                    for (let i = 0; i < names.length; i++) {
+                        if (new RegExp(element.replace(/^\s/g, '').replace(/\s$/g, ''), 'i').test(names[i].English))
+                            spkrarray["$or"].push({ "nameIDs": i })
+                    }
+
+                    speakers["$and"].push(spkrarray)
                 })
-                query["$and"].push({ "nameIDs": { "$all": _.flatten(speakers) } })
+
+
             } else if (typeof(req.query.names) === "string") { //if one name
-                let speakers
-                for (let i = 0; i < names.length; i++) { if (names[i].English === req.query.names.replace(/^\s/g, '').replace(/\s$/g, '')) speakers = i }
-                query["$and"].push({ "nameIDs": speakers })
+                var speakers = { "$or": [] }
+                for (let i = 0; i < names.length; i++) {
+                    if (new RegExp(req.query.names.replace(/^\s/g, '').replace(/\s$/g, ''), 'i').test(names[i].English))
+                        speakers["$or"].push({ "nameIDs": i })
+                }
+
             }
-        } //search by names 
+            query["$and"].push(speakers)
+        }
 
         if (query["$and"].length === 0) query = {} //if "#and" is empty remove it to prevent error
         if (req.query.hidecompleted) query["$where"] = "function() { return this.English.filter(e => e !== null).length != this.Japanese.filter(e => e !== '').length}"
