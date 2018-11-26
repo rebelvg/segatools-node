@@ -10,7 +10,7 @@ module.exports = async (fastify, opts) => {
 		var sortorder = -1 //descending order by default
 
 		if (req.query.sort_by) sortingstring=req.query.sort_by //if set - sort by this
-		if (req.query.asc_order == "true") sortorder = 1 //ascension order if needed
+		if (req.query.asc_order) sortorder = 1 //ascension order if needed
 
 		var query = {"$and":[]} //couldn't find a way to push in query easier
 
@@ -19,12 +19,12 @@ module.exports = async (fastify, opts) => {
             const searchregex = new RegExp(_.escapeRegExp(req.query.search).replace(/^/i,"(?=.*").replace(/\s/g,")(?=.*").replace(/$/i,")"), "i");
             query["$and"].push({$or:[{'English': searchregex},{'Japanese': searchregex}] });
         }
-		if (req.query.chapter == "No Chapter") query["$and"].push({$or:[{'chapter': req.query.chapter},{'chapter': { $exists: false }}]}) //if no chapter - search "no chapter" and items without chapter
+		if (req.query.chapter === "No Chapter") query["$and"].push({$or:[{'chapter': req.query.chapter},{'chapter': { $exists: false }}]}) //if no chapter - search "no chapter" and items without chapter
 		else if (req.query.chapter) query["$and"].push( {'chapter': req.query.chapter} ,{'chapter': { $exists: true }})	//if any other chapter - search for it and don't count items without chapter
 		if (req.query.filename) query["$and"].push({"Filename": new RegExp(_.escapeRegExp(req.query.filename).replace(/\s/g,""), "i")}) //filename search, removes spaces
 		if (req.query.speakers_count) query["$and"].push({"nameIDs": {$size: _.toInteger(req.query.speakers_count)}}) //search by speaker count
 		if (req.query.speakers) query["$and"].push({"nameIDs": { "$all": req.query.speakers.split(',').map(Number) } }) //search by names separated by commas
-		if (query["$and"].length == 0) query = {} //if "#and" is empty remove it to prevent error
+		if (query["$and"].length === 0) query = {} //if "#and" is empty remove it to prevent error
         if (req.query.hide_completed) query["$where"] = "function() { return this.English.filter(e => e !== null).length != this.Japanese.filter(e => e !== '').length}"
         if (req.query.hide_changed) query["$where"] = "function() { return this.English.filter(e => e !== null).length == 0}"
 
