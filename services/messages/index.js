@@ -36,7 +36,7 @@ module.exports = async(fastify, opts) => {
                 req.query.names.forEach(function(element) {
                     let spkrarray = { "$or": [] }
                     for (let i = 0; i < names.length; i++) {
-                        if (new RegExp(element.replace(/^\s/g, '').replace(/\s$/g, ''), 'i').test(names[i].English))
+                        if ((new RegExp(element.replace(/^\s/g, '').replace(/\s$/g, ''), 'i').test(names[i].English)) || (new RegExp(element.replace(/^\s/g, '').replace(/\s$/g, ''), 'i').test(names[i].Japanese)))
                             spkrarray["$or"].push({ "nameIDs": i })
                     }
 
@@ -47,7 +47,7 @@ module.exports = async(fastify, opts) => {
             } else if (typeof(req.query.names) === "string") { //if one name
                 var speakers = { "$or": [] }
                 for (let i = 0; i < names.length; i++) {
-                    if (new RegExp(req.query.names.replace(/^\s/g, '').replace(/\s$/g, ''), 'i').test(names[i].English))
+                    if ((new RegExp(req.query.names.replace(/^\s/g, '').replace(/\s$/g, ''), 'i').test(names[i].English)) || (new RegExp(req.query.names.replace(/^\s/g, '').replace(/\s$/g, ''), 'i').test(names[i].Japanese)))
                         speakers["$or"].push({ "nameIDs": i })
                 }
 
