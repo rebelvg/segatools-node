@@ -2,14 +2,9 @@
   "name": "Segatools-node",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
-  "directories": {
-    "test": "test"
-  },
+  "main": "index.js",
   "scripts": {
-    "test": "tap test/**/*.test.js",
-    "start": "fastify start -l info app.js",
-    "dev": "fastify start -l info -P app.js --watch",
+    "start": "node index.js",
     "import": "node import.js"
   },
   "repository": {
@@ -24,15 +19,8 @@
   },
   "homepage": "https://github.com/SlowpokeVG/Segatools-node#readme",
   "dependencies": {
-    "fastify": "^1.11.0",
-    "fastify-autoload": "^0.5.0",
-    "fastify-cli": "^0.25.4",
-    "fastify-mongodb": "^0.9.1",
-    "fastify-plugin": "^1.2.0",
+    "express": "^4.16.4",
     "lodash": "^4.17.11",
     "mongodb": "^3.1.10"
-  },
-  "devDependencies": {
-    "tap": "^12.0.0"
   }
 }
