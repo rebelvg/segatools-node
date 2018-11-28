@@ -2,45 +2,45 @@ const _ = require('lodash')
 
 module.exports = async(fastify, opts) => {
     fastify.get('/', async function(req, res) {
-        const cursor = this.mongo.db.collection('messages') //connect to collection
-        const limit = _.toInteger(req.query.limit) || 10 // google fastify request. Here we are taking query params and if there are no query - we use default
+        const cursor = this.mongo.db.collection('messages')
+        const limit = _.toInteger(req.query.limit) || 10
         const page = _.toInteger(req.query.page) || 1
-        const names = await this.mongo.db.collection('names').find().toArray(); //get all names to put into the output
-        var sortingstring = 'timestamp' // default sorting by timestamp
-        var sortorder = -1 //descending order by default
+        const names = await this.mongo.db.collection('names').find().toArray();
+        var sortingstring = 'timestamp'
+        var sortorder = -1
 
-        if (req.query.sort_by) sortingstring = req.query.sort_by //if set - sort by this
-        if (req.query.asc_order) sortorder = 1 //ascension order if needed
+        if (req.query.sort_by) sortingstring = req.query.sort_by
+        if (req.query.asc_order) sortorder = 1
 
-        var query = { "$and": [] } //couldn't find a way to push in query easier
-
-        if (req.query.search) { //search both japanese and english, creating regexp that searches for every word separately
+        var query = { "$and": [] }
+            //search both japanese and english, creating regexp that searches for every word separately
+        if (req.query.search) {
             const searchregex = new RegExp(_.escapeRegExp(req.query.search).replace(/^/i, "(?=.*").replace(/\s/g, ")(?=.*").replace(/$/i, ")"), "i");
             query["$and"].push({ $or: [{ 'English': searchregex }, { 'Japanese': searchregex }] });
         }
         if (req.query.chapter === "No Chapter") query["$and"].push({ $or: [{ 'chapter': req.query.chapter }, { 'chapter': { $exists: false } }] }) //if no chapter - search "no chapter" and items without chapter
         else if (req.query.chapter) query["$and"].push({ 'chapter': req.query.chapter }, { 'chapter': { $exists: true } }) //if any other chapter - search for it and don't count items without chapter
-        if (req.query.filename) query["$and"].push({ "Filename": new RegExp(_.escapeRegExp(req.query.filename).replace(/\s/g, ""), "i") }) //filename search, removes spaces
-        if (req.query.speakers_count) query["$and"].push({ "nameIDs": { $size: _.toInteger(req.query.speakers_count) } }) //search by speaker count
+        if (req.query.filename) query["$and"].push({ "Filename": new RegExp(_.escapeRegExp(req.query.filename).replace(/\s/g, ""), "i") })
+        if (req.query.speakers_count) query["$and"].push({ "nameIDs": { $size: _.toInteger(req.query.speakers_count) } })
 
         if (req.query.namesIDs) {
             console.log(typeof(req.query.namesIDs))
             if (typeof(req.query.namesIDs) == 'object') query["$and"].push({ "nameIDs": { "$all": req.query.namesIDs.map(Number) } })
             else if (typeof(req.query.namesIDs) === "string") query["$and"].push({ "nameIDs": _.toInteger(req.query.namesIDs) })
-        } //search by name IDs
+        }
 
         if (req.query.names) {
             console.log(typeof(req.query.names))
             if (typeof(req.query.names) === "object") { //if more than one name
                 var speakers = { "$and": [] }
                 req.query.names.forEach(function(element) {
-                    let spkrarray = { "$or": [] }
+                    let speakersArray = { "$or": [] }
                     for (let i = 0; i < names.length; i++) {
                         if ((new RegExp(element.replace(/^\s/g, '').replace(/\s$/g, ''), 'i').test(names[i].English)) || (new RegExp(element.replace(/^\s/g, '').replace(/\s$/g, ''), 'i').test(names[i].Japanese)))
-                            spkrarray["$or"].push({ "nameIDs": i })
+                            speakersArray["$or"].push({ "nameIDs": i })
                     }
 
-                    speakers["$and"].push(spkrarray)
+                    speakers["$and"].push(speakersArray)
                 })
 
 
@@ -55,15 +55,15 @@ module.exports = async(fastify, opts) => {
             query["$and"].push(speakers)
         }
 
-        if (query["$and"].length === 0) query = {} //if "#and" is empty remove it to prevent error
-        if (req.query.hidecompleted) query["$where"] = "function() { return this.English.filter(e => e !== null).length != this.Japanese.filter(e => e !== '').length}"
-        if (req.query.hidechanged) query["$where"] = "function() { return this.English.filter(e => e !== null).length == 0}"
+        if (query["$and"].length === 0) query = {}
+        if (req.query.hide_completed) query["$where"] = "function() { return this.English.filter(e => e !== null).length != this.Japanese.filter(e => e !== '').length}"
+        if (req.query.hide_changed) query["$where"] = "function() { return this.English.filter(e => e !== null).length == 0}"
 
         const foundmessages = await cursor.find(query)
         const count = await foundmessages.count();
         var result = await foundmessages.sort({
             [sortingstring]: sortorder
-        }).skip((limit * (page - 1)) - (page - 1)).limit(limit).toArray(); // we take all items, sort them, limit them, skip a limited and return array
+        }).skip((limit * (page - 1)) - (page - 1)).limit(limit).toArray();
 
         result.forEach(function(element) {
             //add an array of names to output "Japanese (English)"
@@ -74,25 +74,24 @@ module.exports = async(fastify, opts) => {
                 }))
                 //add an array of speakers "Japanese (English)"
             element.SpeakerName = element.Speaker.map((function(name) {
-                    let fullnames = ""
-                    if (name != null) {
-                        let Englishname = ""
-                        if (names[name].English) Englishname = " (" + names[name].English + ")"
-                        fullnames = names[name].Japanese + Englishname
-                    }
-                    return fullnames
-                }))
-                //add progress percentage
+                let fullnames = ""
+                if (name != null) {
+                    let Englishname = ""
+                    if (names[name].English) Englishname = " (" + names[name].English + ")"
+                    fullnames = names[name].Japanese + Englishname
+                }
+                return fullnames
+            }))
             element.progress = parseFloat((element.English.filter(e => e !== null).length * 100 / element.Japanese.filter(e => e !== '').length).toFixed(1));
         })
 
-        const info = { current_page: page, all_pages: _.ceil(count / limit), all_results: count }; // data for pagination
-        res.send({ info, quer: query, messages: result }) // send result
+        const info = { current_page: page, all_pages: _.ceil(count / limit), all_results: count };
+        res.send({ info, quer: query, messages: result })
     })
 
 
     fastify.get('/:id', async function(req, res) {
-        const cursor = this.mongo.db.collection('messages') //connect to collection
+        const cursor = this.mongo.db.collection('messages')
         var ObjectID = require('mongodb').ObjectID;
         const ID = new ObjectID(req.params.id)
         const allmessages = await cursor.find().sort({ "_id": 1 }).toArray()
@@ -117,23 +116,21 @@ module.exports = async(fastify, opts) => {
             currentid = idarray.indexOf(result._id)
             if (currentid > 0) result.prev_id = idarray[currentid - 1]
             if (currentid < idarray.length - 1) result.next_id = idarray[currentid + 1]
-                //add names list
-            const names = await this.mongo.db.collection('names').find().toArray(); //get all names to put into the output
+            const names = await this.mongo.db.collection('names').find().toArray();
             result.names = result.nameIDs.map((function(name) {
                 Englishname = ""
                 if (names[name].English) Englishname = " (" + names[name].English + ")"
                 return names[name].Japanese + Englishname
             }))
             result.SpeakerName = result.Speaker.map((function(name) {
-                    let fullnames = ""
-                    if (name != null) {
-                        let Englishname = ""
-                        if (names[name].English) Englishname = " (" + names[name].English + ")"
-                        fullnames = names[name].Japanese + Englishname
-                    }
-                    return fullnames
-                }))
-                //add progress percentage
+                let fullnames = ""
+                if (name != null) {
+                    let Englishname = ""
+                    if (names[name].English) Englishname = " (" + names[name].English + ")"
+                    fullnames = names[name].Japanese + Englishname
+                }
+                return fullnames
+            }))
             result.progress = parseFloat((result.English.filter(e => e !== null).length * 100 / result.Japanese.filter(e => e !== '').length).toFixed(1));
         }
         res.send(result)
