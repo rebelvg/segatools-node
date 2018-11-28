@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "import": "node import.js"
+    "import": "node scripts/import.js"
   },
   "repository": {
     "type": "git",
