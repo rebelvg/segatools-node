@@ -28,7 +28,7 @@ module.exports = async(fastify, opts) => {
                     allmessages.forEach(function(file) {
                         for (let m = 0; m < file.Japanese.length; m++) {
                             if (file.Japanese[m])
-                                if ((file.Japanese[m] === ChangedFile.Japanese[i])(req.body.English[i] !== file.English[m]))
+                                if ((file.Japanese[m] === ChangedFile.Japanese[i]) && (req.body.English[i] !== file.English[m]))
                                     cursor.update({ _id: file._id }, {
                                         $set: {
                                             ['English.' + m]: req.body.English[i]
