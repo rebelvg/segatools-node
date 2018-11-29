@@ -22,7 +22,7 @@ app.use(function (err, req, res, next) {
 });
 
 MongoClient.connect('mongodb://localhost/', {useNewUrlParser: true}, async function (err, client) {
-  if (err) throw err;
+  if (err) {throw err;}
 
   app.set('mongoClient', client.db('segatools'));
 

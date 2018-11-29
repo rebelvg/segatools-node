@@ -27,6 +27,12 @@ module.exports = {
         "eol-last": [
             "error",
             "always"
-        ]
+        ],
+        "no-console": 0,
+        "no-unused-vars": 0,
+        "no-var": "error",
+        "eqeqeq": ["error", "always"],
+        "curly": ["error", "all"],
+        "no-multiple-empty-lines": ["error", { "max": 1 }]
     }
 };
