@@ -3,58 +3,75 @@ const _ = require('lodash');
 async function update(req, res, next) {
   const mongoClient = req.app.get('mongoClient');
 
-  const cursor = mongoClient.collection('messages');
-  let ObjectID = require('mongodb').ObjectID;
-  const ID = new ObjectID(req.params.id);
-  const TimeOfChange = 'log.' + Math.round(new Date() / 1000).toString();
-  cursor.update(
-    { _id: ID },
-    {
-      $set: {
-        chapter: req.body.chapter,
-        timestamp: Math.round(new Date() / 1000),
-        [TimeOfChange]: req.raw.ip.toString()
-      }
-    }
-  );
-  if (req.body.onlythisfile === true) {
-    cursor.update(
-      { _id: ID },
+  const messageId = req.params.id;
+  const { chapterName, englishLines, updateOne } = req.body;
+
+  const collection = mongoClient.collection('messages');
+
+  if (updateOne) {
+    await collection.update(
+      { _id: messageId },
       {
         $set: {
-          English: req.body.English
+          chapter: chapterName,
+          English: englishLines
         }
       }
     );
-  } else {
-    const allmessages = await cursor.find().toArray();
-    const idmessage = await allmessages.findIndex(function(element) {
-      return element._id === req.params.id;
-    });
-    let ChangedFile = allmessages[idmessage];
-    for (let i = 0; i < ChangedFile.Japanese.length; i++) {
-      if (ChangedFile.Japanese[i] && req.body.English[i]) {
-        allmessages.forEach(function(file) {
-          for (let m = 0; m < file.Japanese.length; m++) {
-            if (file.Japanese[m]) {
-              if (file.Japanese[m] === ChangedFile.Japanese[i] && req.body.English[i] !== file.English[m]) {
-                cursor.update(
-                  { _id: file._id },
-                  {
-                    $set: {
-                      ['English.' + m]: req.body.English[i]
-                    }
-                  }
-                );
-              }
-            }
-          }
-        });
-      }
-    }
+
+    return res.send(null);
   }
 
-  res.send('replaced');
+  const allMessages = await collection.find().toArray();
+
+  const originalMessage = allMessages.find(message => {
+    return message._id === messageId;
+  });
+
+  if (!originalMessage) {
+    throw new Error('Message not found.');
+  }
+
+  const japaneseToEnglishMap = {};
+
+  originalMessage.Japanese.forEach((japaneseLine, index) => {
+    const englishLine = englishLines[index];
+
+    if (!englishLine) {
+      return;
+    }
+
+    japaneseToEnglishMap[japaneseLine] = englishLine;
+  });
+
+  const updateOperations = [];
+
+  for (const message of allMessages) {
+    const {_id: messageId, Japanese: messageJapaneseLines} = message;
+
+    messageJapaneseLines.forEach((japaneseLine, index) => {
+      const japaneseToEnglishLine = japaneseToEnglishMap[japaneseLine];
+
+      if (!japaneseToEnglishLine) {
+        return;
+      }
+
+      const updatePromise = collection.update(
+        { _id: messageId },
+        {
+          $set: {
+            [`English.${index}`]: japaneseToEnglishLine
+          }
+        }
+      );
+
+      updateOperations.push(updatePromise);
+    });
+  }
+
+  await Promise.all(updateOperations);
+
+  res.send(null);
 }
 
 module.exports = update;
