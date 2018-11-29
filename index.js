@@ -14,19 +14,19 @@ app.use('/api/messages', messages);
 app.use('/api/names', names);
 
 app.use(function (req, res, next) {
-    throw new Error('Not found.');
+  throw new Error('Not found.');
 });
 
 app.use(function (err, req, res, next) {
-    res.status(500).json({error: err.message});
+  res.status(500).json({error: err.message});
 });
 
 MongoClient.connect('mongodb://localhost/', {useNewUrlParser: true}, async function (err, client) {
-    if (err) throw err;
+  if (err) throw err;
 
-    app.set('mongoClient', client.db('segatools'));
+  app.set('mongoClient', client.db('segatools'));
 
-    app.listen(3000, () => {
-        console.log('server is running.');
-    });
+  app.listen(3000, () => {
+    console.log('server is running.');
+  });
 });
