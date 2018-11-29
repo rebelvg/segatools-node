@@ -1,10 +1,12 @@
 const _ = require('lodash');
 
 async function find(req, res, next) {
-    const cursor = this.mongo.db.collection('messages')
+    const mongoClient = req.app.get('mongoClient');
+
+    const cursor = mongoClient.collection('messages')
     const limit = _.toInteger(req.query.limit) || 10
     const page = _.toInteger(req.query.page) || 1
-    const names = await this.mongo.db.collection('names').find().toArray();
+    const names = await mongoClient.collection('names').find().toArray();
     var sortingstring = 'timestamp'
     var sortorder = -1
 

@@ -1,7 +1,9 @@
 const _ = require('lodash');
 
 async function update(req, res, next) {
-    const cursor = this.mongo.db.collection('messages')
+    const mongoClient = req.app.get('mongoClient');
+
+    const cursor = mongoClient.collection('messages')
     var ObjectID = require('mongodb').ObjectID;
     const ID = new ObjectID(req.params.id)
     const TimeOfChange = 'log.' + Math.round(new Date() / 1000).toString();

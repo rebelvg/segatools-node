@@ -1,7 +1,9 @@
 const _ = require('lodash');
 
 async function findById(req, res, next) {
-    const cursor = this.mongo.db.collection('messages')
+    const mongoClient = req.app.get('mongoClient');
+
+    const cursor = mongoClient.collection('messages')
     var ObjectID = require('mongodb').ObjectID;
     const ID = new ObjectID(req.params.id)
     const allmessages = await cursor.find().sort({"_id": 1}).toArray()
@@ -30,7 +32,7 @@ async function findById(req, res, next) {
         currentid = idarray.indexOf(result._id)
         if (currentid > 0) result.prev_id = idarray[currentid - 1]
         if (currentid < idarray.length - 1) result.next_id = idarray[currentid + 1]
-        const names = await this.mongo.db.collection('names').find().toArray();
+        const names = await mongoClient.collection('names').find().toArray();
         result.names = result.nameIDs.map((function (name) {
             Englishname = ""
             if (names[name].English) Englishname = " (" + names[name].English + ")"

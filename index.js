@@ -21,8 +21,10 @@ app.use(function (err, req, res, next) {
     res.status(500).json({error: err.message});
 });
 
-MongoClient.connect('mongodb://localhost/segatools', {useNewUrlParser: true}, async function (err, client) {
+MongoClient.connect('mongodb://localhost/', {useNewUrlParser: true}, async function (err, client) {
     if (err) throw err;
+
+    app.set('mongoClient', client.db('segatools'));
 
     app.listen(3000, () => {
         console.log('server is running.');
