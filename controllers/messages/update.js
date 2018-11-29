@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const { ObjectID } = require('mongodb');
 
 async function update(req, res, next) {
   const mongoClient = req.app.get('mongoClient');
@@ -10,7 +11,7 @@ async function update(req, res, next) {
 
   if (updateOne) {
     await collection.update(
-      { _id: messageId },
+      { _id: new ObjectID(messageId) },
       {
         $set: {
           chapter: chapterName,
