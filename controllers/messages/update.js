@@ -47,7 +47,7 @@ async function update(req, res, next) {
   const updateOperations = [];
 
   for (const message of allMessages) {
-    const {_id: messageId, Japanese: messageJapaneseLines} = message;
+    const { _id: messageId, Japanese: messageJapaneseLines } = message;
 
     messageJapaneseLines.forEach((japaneseLine, index) => {
       const japaneseToEnglishLine = japaneseToEnglishMap[japaneseLine];
