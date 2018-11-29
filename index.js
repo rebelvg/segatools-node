@@ -18,7 +18,13 @@ app.use(function(req, res, next) {
 });
 
 app.use(function(err, req, res, next) {
+  console.error(err);
+
   res.status(500).json({ error: err.message });
+});
+
+process.on('unhandledRejection', (reason, p) => {
+  throw reason;
 });
 
 MongoClient.connect(
