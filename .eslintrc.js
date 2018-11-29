@@ -20,6 +20,10 @@ module.exports = {
             "error",
             "always"
         ],
+        "linebreak-style": [
+            "error",
+            "unix"
+        ],
         "eol-last": [
             "error",
             "always"
