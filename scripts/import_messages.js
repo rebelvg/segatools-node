@@ -14,13 +14,13 @@ MongoClient.connect(
 
     const collection = db.collection('messages');
     const importedData = require('./import/messages.json');
-    const importedNames = require('./import/namemess.json');
+    const importedNames = require('./import/speakers.json');
 
-    await Object.values(importedData).map(async (item, i) => {
+    Object.values(importedData).map(async (item, i) => {
       let lines = [];
-      const Speaker = await _.find(importedNames, ['FileName', item.Filename]).NameIDs;
+      const Speaker = _.find(importedNames, ['FileName', item.Filename]).NameIDs;
       Object.values(item.Japanese).map(async (line, message) => {
-        await lines.push({
+        lines.push({
           Japanese: line,
           English: item.English[message],
           Speaker: Speaker[message]
