@@ -10,13 +10,16 @@ const importedMessagesData = require('./import/messages.json');
 const importedSpeakersData = require('./import/speakers.json');
 
 (async () => {
-  const mongoClient = await MongoClient.connect(mongoUrl, { useNewUrlParser: true });
+  const mongoClient = await MongoClient.connect(
+    mongoUrl,
+    { useNewUrlParser: true }
+  );
 
   const db = mongoClient.db(dbName);
 
   const messagesCollection = db.collection('messages');
 
-  const importPromises = _.map(importedMessagesData, async (message) => {
+  const importPromises = _.map(importedMessagesData, async message => {
     const lines = [];
 
     const speakerIds = _.find(importedSpeakersData, ['FileName', message.Filename]).NameIDs;
