@@ -26,7 +26,7 @@ async function update(req, res, next) {
   });
 
   await collection.updateOne(
-    { _id: new ObjectID(messageId) },
+    { _id: messageRecord._id },
     {
       $set: {
         ...messageModel
