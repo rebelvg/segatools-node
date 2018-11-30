@@ -2,6 +2,7 @@ const fs = require('fs');
 const _ = require('lodash');
 const { MongoClient } = require('mongodb');
 const { ObjectID } = require('mongodb');
+
 const Message = require('../models/message');
 
 const mongoUrl = 'mongodb://localhost';
@@ -37,6 +38,7 @@ const importedSpeakersData = require('./import/speakers.json');
 
     const messageModel = new Message({
       fileName: message.Filename,
+      chapterName: message.chapter,
       lines,
       timeUpdated: new Date(message.timestamp * 1000)
     });
