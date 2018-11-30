@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "precommit": "eslint . --fix && prettier --write \"**/*.js\"",
+    "prepush": "prettier --write \"**/*.js\" && eslint . --fix",
     "start": "node index.js",
     "import": "node scripts/import.js"
   },

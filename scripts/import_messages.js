@@ -1,43 +1,48 @@
 const fs = require('fs');
 const _ = require('lodash');
-const MongoClient = require('mongodb').MongoClient;
-const ObjectID = require('mongodb').ObjectID;
-const url = 'mongodb://localhost';
+const { MongoClient } = require('mongodb');
+const { ObjectID } = require('mongodb');
+
+const mongoUrl = 'mongodb://localhost';
 const dbName = 'segatools';
-const folder = './import';
 
-MongoClient.connect(
-  url,
-  async function(err, client) {
-    console.log('Connected successfully to server');
-    const db = client.db(dbName);
+const importedMessagesData = require('./import/messages.json');
+const importedSpeakersData = require('./import/speakers.json');
 
-    const collection = db.collection('messages');
-    const importedData = require('./import/messages.json');
-    const importedNames = require('./import/speakers.json');
+(async () => {
+  const mongoClient = await MongoClient.connect(mongoUrl);
 
-    Object.values(importedData).map(async (item, i) => {
-      let lines = [];
-      const Speaker = _.find(importedNames, ['FileName', item.Filename]).NameIDs;
-      Object.values(item.Japanese).map(async (line, message) => {
-        lines.push({
-          text: {
-            japanese: line,
-            english: item.English[message]
-          },
-          speakerID: Speaker[message]
-        });
-      });
-      await collection.insertOne({
-        _id: new ObjectID(item._id['$id']),
-        fileName: item.Filename,
-        lines: lines,
-        nameIDs: item.nameIDs,
-        timestamp: item.timestamp
+  const db = mongoClient.db(dbName);
+
+  const messagesCollection = db.collection('messages');
+
+  const importPromises = _.map(importedMessagesData, async (message, index) => {
+    const lines = [];
+
+    const speakers = _.find(importedSpeakersData, ['FileName', message.Filename]).NameIDs;
+
+    _.forEach(message.Japanese, (japaneseLine, index) => {
+      lines.push({
+        text: {
+          japanese: japaneseLine,
+          english: message.English[index]
+        },
+        speakerId: speakers[index]
       });
     });
 
-    console.log('imported messages');
-    client.close();
-  }
-);
+    return messagesCollection.insertOne({
+      _id: message._id,
+      fileName: message.Filename,
+      lines: lines,
+      nameIDs: message.nameIDs,
+      timeUpdated: message.timestamp
+    });
+  });
+
+  await Promise.all(importPromises);
+
+  console.log('imported messages');
+
+  await mongoClient.close();
+})();
