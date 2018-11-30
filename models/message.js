@@ -1,8 +1,9 @@
 const _ = require('lodash');
 
 class Message {
-  constructor({ fileName, lines, timeUpdated }) {
+  constructor({ fileName, chapterName, lines, timeUpdated }) {
     this.fileName = fileName;
+    this.chapterName = chapterName || 'No Chapter';
     this.lines = lines;
     this.nameIds = this._getNameIds(lines);
     this.percentDone = this._getPercent(lines);
@@ -29,6 +30,23 @@ class Message {
     });
 
     return (englishLines.length / japaneseLines.length || 0) * 100;
+  }
+
+  update({ chapterName, updatedLines }) {
+    this.chapterName = chapterName || this.chapterName;
+
+    _.forEach(this.lines, line => {
+      _.forEach(updatedLines, updatedLine => {
+        if (line.text.japanese !== updatedLine.japanese) {
+          return;
+        }
+
+        line.text.english = updatedLine.english;
+      });
+    });
+
+    this.percentDone = this._getPercent(this.lines);
+    this.timeUpdated = new Date();
   }
 }
 
