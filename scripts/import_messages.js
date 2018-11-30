@@ -21,11 +21,11 @@ MongoClient.connect(
       const Speaker = _.find(importedNames, ['FileName', item.Filename]).NameIDs;
       Object.values(item.Japanese).map(async (line, message) => {
         lines.push({
-          text:{
+          text: {
             japanese: line,
             english: item.English[message]
           },
-          speakerName: Speaker[message]
+          speakerID: Speaker[message]
         });
       });
       await collection.insertOne({
