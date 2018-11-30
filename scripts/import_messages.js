@@ -1,7 +1,7 @@
 const fs = require('fs');
 const _ = require('lodash');
 const MongoClient = require('mongodb').MongoClient;
-const objectID = require('mongodb').ObjectID;
+const ObjectID = require('mongodb').ObjectID;
 const url = 'mongodb://localhost';
 const dbName = 'segatools';
 const folder = './import';
@@ -21,15 +21,17 @@ MongoClient.connect(
       const Speaker = _.find(importedNames, ['FileName', item.Filename]).NameIDs;
       Object.values(item.Japanese).map(async (line, message) => {
         lines.push({
-          Japanese: line,
-          English: item.English[message],
-          Speaker: Speaker[message]
+          text:{
+            japanese: line,
+            english: item.English[message]
+          },
+          speakerName: Speaker[message]
         });
       });
       await collection.insertOne({
-        _id: objectID(item._id['$id']),
-        Filename: item.Filename,
-        Lines: lines,
+        _id: new ObjectID(item._id['$id']),
+        fileName: item.Filename,
+        lines: lines,
         nameIDs: item.nameIDs,
         timestamp: item.timestamp
       });
