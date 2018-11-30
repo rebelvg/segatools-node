@@ -2,6 +2,7 @@ const fs = require('fs');
 const _ = require('lodash');
 const { MongoClient } = require('mongodb');
 const { ObjectID } = require('mongodb');
+const Message = require('../models/message');
 
 const mongoUrl = 'mongodb://localhost';
 const dbName = 'segatools';
@@ -34,12 +35,15 @@ const importedSpeakersData = require('./import/speakers.json');
       });
     });
 
-    return messagesCollection.insertOne({
-      _id: new ObjectID(message._id['$id']),
+    const messageModel = new Message({
       fileName: message.Filename,
-      lines: lines,
-      nameIds: message.nameIDs,
+      lines,
       timeUpdated: new Date(message.timestamp * 1000)
+    });
+
+    return messagesCollection.insertOne({
+      ...messageModel,
+      _id: new ObjectID(message._id['$id'])
     });
   });
 
