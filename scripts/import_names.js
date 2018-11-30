@@ -11,18 +11,15 @@ MongoClient.connect(
   async function(err, client) {
     console.log('Connected successfully to server');
     const db = client.db(dbName);
-        
+
     const collection = db.collection('names');
     const importedData = require('./import/names.json');
     let jsonready = [];
-    Object.values(importedData).map(
-      async item => await jsonready.push({ ...item, _id: objectID(item._id['$id']) })
-    );
+    Object.values(importedData).map(async item => await jsonready.push({ ...item, _id: objectID(item._id['$id']) }));
 
     await collection.insert(jsonready);
     console.log('imported');
-    
+
     client.close();
-    
   }
 );
