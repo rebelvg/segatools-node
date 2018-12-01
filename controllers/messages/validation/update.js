@@ -13,15 +13,15 @@ const schema = Joi.object({
 }).required();
 
 function updateValidation(req, res, next) {
-  const validationResult = Joi.validate(req.body, schema, {
+  const { error } = Joi.validate(req.body, schema, {
     abortEarly: false
   });
 
-  if (!validationResult.error) {
+  if (!error) {
     return next();
   }
 
-  throw validationResult.error;
+  throw error;
 }
 
 module.exports = updateValidation;
