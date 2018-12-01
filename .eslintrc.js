@@ -11,7 +11,6 @@ module.exports = {
     indent: ['error', 2],
     quotes: ['error', 'single', { avoidEscape: true, allowTemplateLiterals: true }],
     semi: ['error', 'always'],
-    'linebreak-style': ['error', 'unix'],
     'eol-last': ['error', 'always'],
     'no-console': 0,
     'no-unused-vars': 0,

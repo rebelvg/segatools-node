@@ -1,25 +1,36 @@
 const fs = require('fs');
 const _ = require('lodash');
-const MongoClient = require('mongodb').MongoClient;
-const objectID = require('mongodb').ObjectID;
-const url = 'mongodb://localhost';
+const { MongoClient } = require('mongodb');
+const { ObjectID } = require('mongodb');
+
+const mongoUrl = 'mongodb://localhost';
 const dbName = 'segatools';
-const folder = './import';
 
-MongoClient.connect(
-  url,
-  async function(err, client) {
-    console.log('Connected successfully to server');
-    const db = client.db(dbName);
+const importedNamesData = require('./import/names.json');
 
-    const collection = db.collection('names');
-    const importedData = require('./import/names.json');
-    let jsonready = [];
-    Object.values(importedData).map(async item => await jsonready.push({ ...item, _id: objectID(item._id['$id']) }));
+(async () => {
+  const mongoClient = await MongoClient.connect(
+    mongoUrl,
+    { useNewUrlParser: true }
+  );
 
-    await collection.insert(jsonready);
-    console.log('imported');
+  const db = mongoClient.db(dbName);
 
-    client.close();
-  }
-);
+  const namesCollection = db.collection('names');
+
+  const importPromises = _.map(importedNamesData, name => {
+    return namesCollection.insertOne({
+      nameId: name.nameID,
+      japanese: name.Japanese,
+      english: name.English,
+      timeUpdated: new Date(name.timestamp * 1000),
+      _id: new ObjectID(name._id['$id'])
+    });
+  });
+
+  await Promise.all(importPromises);
+
+  console.log('imported done.');
+
+  await mongoClient.close();
+})();
