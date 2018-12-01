@@ -7,7 +7,7 @@ async function update(req, res, next) {
   const mongoClient = req.app.get('mongoClient');
 
   const messageId = req.params.id;
-  const { chapterName, updatedLines = [], updateOne = false } = req.body;
+  const { chapterName, updatedLines = [], updateMany = true } = req.body;
 
   const collection = mongoClient.collection('messages');
 
@@ -38,25 +38,17 @@ async function update(req, res, next) {
     messagesUpdated: 0
   };
 
-  const orQuery = [];
-
-  if (!updateOne) {
-    updatedLines.forEach(updatedLine => {
-      orQuery.push({
-        'lines.text.japanese': updatedLine.japanese
-      });
-    });
-  } else {
-    orQuery.push({
+  const findQuery = !updateMany
+    ? {
       _id: messageRecord._id
-    });
-  }
+    }
+    : {
+      'lines.text.japanese': {
+        $in: updatedLines.map(updateLine => updateLine.japanese)
+      }
+    };
 
-  const allMessages = await collection
-    .find({
-      $or: orQuery
-    })
-    .toArray();
+  const allMessages = await collection.find(findQuery).toArray();
 
   const updateOperations = [];
 

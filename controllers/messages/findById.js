@@ -4,13 +4,13 @@ const { ObjectID } = require('mongodb');
 async function findById(req, res, next) {
   const mongoClient = req.app.get('mongoClient');
 
-  const messageId = new ObjectID(req.params.id);
+  const messageId = req.params.id;
 
   const messagesCollection = mongoClient.collection('messages');
   const namesCollection = mongoClient.collection('names');
 
   const messageRecord = await messagesCollection.findOne({
-    _id: messageId
+    _id: new ObjectID(messageId)
   });
 
   if (!messageRecord) {
