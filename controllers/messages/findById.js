@@ -37,9 +37,9 @@ async function findById(req, res, next) {
 
   const nameRecords = await namesCollection
     .find({
-      $or: messageRecord.nameIds.map(nameId => ({
-        nameId
-      }))
+      nameId: {
+        $in: messageRecord.nameIds
+      }
     })
     .toArray();
 
@@ -49,9 +49,7 @@ async function findById(req, res, next) {
       return _.find(nameRecords, { nameId }) || null;
     }),
     prevMessageId: _.get(prevMessageRecord, '_id', null),
-    nextMessageId: _.get(nextMessageRecord, '_id', null),
-    percentDone: messageRecord.percentDone,
-    timeUpdated: messageRecord.timeUpdated
+    nextMessageId: _.get(nextMessageRecord, '_id', null)
   };
 
   res.send(result);
