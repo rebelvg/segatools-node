@@ -6,10 +6,12 @@ const find = require('../controllers/messages/find');
 const findById = require('../controllers/messages/findById');
 const update = require('../controllers/messages/update');
 
+const updateValidation = require('../controllers/messages/validation/update');
+
 const router = express.Router();
 
 router.get('/:id', asyncMiddleware(findById));
 router.get('/', asyncMiddleware(find));
-router.post('/:id', asyncMiddleware(update));
+router.post('/:id', updateValidation, asyncMiddleware(update));
 
 module.exports = router;
