@@ -24,7 +24,7 @@ const importedSpeakersData = require('./import/speakers.json');
   const importPromises = _.map(importedMessagesData, async message => {
     const lines = [];
 
-    const speakerIds = _.find(importedSpeakersData, ['FileName', message.Filename]).NameIDs;
+    const speakerIds = _.find(importedSpeakersData, { Filename: message.Filename }).NameIDs;
 
     _.forEach(message.Japanese, (japaneseLine, index) => {
       lines.push({
