@@ -21,10 +21,10 @@ const importedSpeakersData = require('./import/speakers.json');
 
   const messagesCollection = db.collection('messages');
 
-  const importPromises = _.map(importedMessagesData, async message => {
+  const importPromises = _.map(importedMessagesData, message => {
     const lines = [];
 
-    const speakerIds = _.find(importedSpeakersData, { Filename: message.Filename }).NameIDs;
+    const speakerIds = _.find(importedSpeakersData, { FileName: message.Filename }).NameIDs;
 
     _.forEach(message.Japanese, (japaneseLine, index) => {
       lines.push({
