@@ -10,20 +10,14 @@ async function find(req, res, next) {
   const messagesCollection = mongoClient.collection('messages');
   const namesCollection = mongoClient.collection('names');
 
-  const nameRecords = await namesCollection
-    .find()
-    .toArray();
+  const nameRecords = await namesCollection.find().toArray();
 
-  const sortingString = !req.query.sortBy
-    ? 'timeUpdated'
-    : req.query.sortBy;
+  const sortingString = !req.query.sortBy ? 'timeUpdated' : req.query.sortBy;
 
-  const sortOrder = !req.query.ascOrder
-    ? -1
-    : 1;
+  const sortOrder = !req.query.ascOrder ? -1 : 1;
 
   let query = { $and: [] };
-  
+
   if (req.query.search) {
     const searchRegex = new RegExp(
       _.escapeRegExp(req.query.search)
@@ -36,20 +30,17 @@ async function find(req, res, next) {
     query['$and'].push({
       lines: {
         $elemMatch: {
-          $or: [
-            { 'text.english': searchRegex },
-            { 'text.japanese': searchRegex }
-          ]
+          $or: [{ 'text.english': searchRegex }, { 'text.japanese': searchRegex }]
         }
       }
     });
   }
 
   if (req.query.chapter) {
-    query['$and'].push({ 
-      chapter: req.query.chapter 
+    query['$and'].push({
+      chapter: req.query.chapter
     });
-  } 
+  }
 
   if (req.query.fileName) {
     query['$and'].push({
@@ -64,15 +55,12 @@ async function find(req, res, next) {
   }
 
   if (req.query.names) {
-    req.query.names.forEach( nameToFind => {
+    req.query.names.forEach(nameToFind => {
       let speakersArray = { $or: [] };
       let nameRegex = new RegExp(nameToFind.replace(/^\s/g, '').replace(/\s$/g, ''), 'i');
 
       for (let i = 0; i < nameRecords.length; i++) {
-        if (
-          nameRegex.test(nameRecords[i].english) ||
-          nameRegex.test(nameRecords[i].japanese)
-        ) {
+        if (nameRegex.test(nameRecords[i].english) || nameRegex.test(nameRecords[i].japanese)) {
           speakersArray['$or'].push({ nameIds: i });
         }
       }
@@ -81,14 +69,10 @@ async function find(req, res, next) {
   }
 
   if (req.query.hideCompleted) {
-    query['$and'].push(
-      {percentDone: {$lt: 100}}
-    );
+    query['$and'].push({ percentDone: { $lt: 100 } });
   }
   if (req.query.hideChanged) {
-    query['$and'].push(
-      {percentDone: 0}
-    );
+    query['$and'].push({ percentDone: 0 });
   }
 
   if (query['$and'].length === 0) {
@@ -106,13 +90,14 @@ async function find(req, res, next) {
     .toArray();
 
   const result = messageRecords.map(file => {
-    return {...file,
+    return {
+      ...file,
       names: file.nameIds.map(nameId => {
         return _.find(nameRecords, { nameId }) || null;
       })
     };
   });
-  
+
   const info = {
     current_page: page,
     all_pages: _.ceil(count / limit),
