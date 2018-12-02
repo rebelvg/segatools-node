@@ -24,27 +24,24 @@ async function find(req, res, next) {
   let query = { $and: [] };
 
   if (search.length > 0) {
+    const searchRegexp = new RegExp(
+      `${search
+        .map(_.escapeRegExp)
+        .map(search => `(?=.*${search})`)
+        .join('')}.+`
+    );
+
     query['$and'].push({
       $or: [
         {
           'lines.text.japanese': {
-            $regex: new RegExp(
-              `${search
-                .map(_.escapeRegExp)
-                .map(search => `(?=.*${search})`)
-                .join('')}.+`
-            ),
+            $regex: searchRegexp,
             $options: 'ism'
           }
         },
         {
           'lines.text.english': {
-            $regex: new RegExp(
-              `${search
-                .map(_.escapeRegExp)
-                .map(search => `(?=.*${search})`)
-                .join('')}.+`
-            ),
+            $regex: searchRegexp,
             $options: 'ism'
           }
         }
