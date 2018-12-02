@@ -13,11 +13,13 @@ const schema = Joi.object({
 }).required();
 
 function updateValidation(req, res, next) {
-  const { error } = Joi.validate(req.body, schema, {
+  const { error, value } = Joi.validate(req.body, schema, {
     abortEarly: false
   });
 
   if (!error) {
+    req.body = value;
+
     return next();
   }
 
