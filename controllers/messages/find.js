@@ -15,12 +15,12 @@ async function find(req, res, next) {
     .toArray();
 
   const sortingString = !req.query.sortBy
-    ? 'timestamp'
+    ? 'timeUpdated'
     : req.query.sortBy;
 
   const sortOrder = !req.query.ascOrder
     ? -1
-    : req.query.ascOrder;
+    : 1;
 
   let query = { $and: [] };
   
@@ -51,9 +51,9 @@ async function find(req, res, next) {
     });
   } 
 
-  if (req.query.filename) {
+  if (req.query.fileName) {
     query['$and'].push({
-      Filename: new RegExp(_.escapeRegExp(req.query.fileName), 'i')
+      fileName: new RegExp(_.escapeRegExp(req.query.fileName), 'i')
     });
   }
 
