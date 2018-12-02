@@ -1,125 +1,115 @@
 const _ = require('lodash');
 const { ObjectID } = require('mongodb');
+const { inspect } = require('util');
 
 async function find(req, res, next) {
   const mongoClient = req.app.get('mongoClient');
 
-  const limit = _.toInteger(req.query.limit) || 10;
-  const page = _.toInteger(req.query.page) || 1;
+  const {
+    page = 1,
+    limit = 20,
+    sortBy = 'timeUpdated',
+    sortOrder = -1,
+    search = [],
+    chapterName,
+    fileName,
+    speakersCount,
+    names = [],
+    percentDone
+  } = req.query;
 
   const messagesCollection = mongoClient.collection('messages');
   const namesCollection = mongoClient.collection('names');
 
-  const nameRecords = await namesCollection
-    .find()
-    .toArray();
-
-  const sortingString = !req.query.sortBy
-    ? 'timeUpdated'
-    : req.query.sortBy;
-
-  const sortOrder = !req.query.ascOrder
-    ? -1
-    : 1;
-
   let query = { $and: [] };
-  
-  if (req.query.search) {
-    const searchRegex = new RegExp(
-      _.escapeRegExp(req.query.search)
-        .replace(/^/i, '(?=.*')
-        .replace(/\s/g, ')(?=.*')
-        .replace(/$/i, ')'),
-      'i'
-    );
+
+  if (search.length > 0) {
+    const searchRegex = new RegExp(search.map(_.escapeRegExp).join('.*'), 'i');
 
     query['$and'].push({
-      lines: {
-        $elemMatch: {
-          $or: [
-            { 'text.english': searchRegex },
-            { 'text.japanese': searchRegex }
-          ]
-        }
-      }
+      $or: [{ 'lines.text.english': searchRegex }, { 'lines.text.japanese': searchRegex }]
     });
   }
 
-  if (req.query.chapter) {
-    query['$and'].push({ 
-      chapter: req.query.chapter 
-    });
-  } 
-
-  if (req.query.fileName) {
+  if (chapterName) {
     query['$and'].push({
-      fileName: new RegExp(_.escapeRegExp(req.query.fileName), 'i')
+      chapterName
     });
   }
 
-  if (req.query.speakers_count) {
+  if (fileName) {
     query['$and'].push({
-      nameIDs: { $size: _.toInteger(req.query.speakersCount) }
+      fileName: new RegExp(_.escapeRegExp(fileName), 'i')
     });
   }
 
-  if (req.query.names) {
-    req.query.names.forEach( nameToFind => {
-      let speakersArray = { $or: [] };
-      let nameRegex = new RegExp(nameToFind.replace(/^\s/g, '').replace(/\s$/g, ''), 'i');
-
-      for (let i = 0; i < nameRecords.length; i++) {
-        if (
-          nameRegex.test(nameRecords[i].english) ||
-          nameRegex.test(nameRecords[i].japanese)
-        ) {
-          speakersArray['$or'].push({ nameIds: i });
-        }
-      }
-      query['$and'].push(speakersArray);
+  if (speakersCount !== undefined) {
+    query['$and'].push({
+      nameIds: { $size: speakersCount }
     });
   }
 
-  if (req.query.hideCompleted) {
-    query['$and'].push(
-      {percentDone: {$lt: 100}}
-    );
+  if (names.length > 0) {
+    const namesQuery = [];
+
+    for (const name of names) {
+      const nameIdsToFind = await namesCollection.distinct('nameId', {
+        $or: [
+          {
+            japanese: new RegExp(_.escapeRegExp(name), 'i')
+          },
+          {
+            english: new RegExp(_.escapeRegExp(name), 'i')
+          }
+        ]
+      });
+
+      query['$and'].push({
+        $or: nameIdsToFind.map(nameId => ({ nameIds: nameId }))
+      });
+    }
   }
-  if (req.query.hideChanged) {
-    query['$and'].push(
-      {percentDone: 0}
-    );
+
+  if (percentDone !== undefined) {
+    query['$and'].push({ percentDone });
   }
 
   if (query['$and'].length === 0) {
     query = {};
   }
 
-  let messageRecords = await messagesCollection.find(query);
-  const count = await messageRecords.count();
-  messageRecords = await messageRecords
+  console.log(inspect(query, { showHidden: false, depth: null }));
+
+  const messageRecords = await messagesCollection
+    .find(query)
     .sort({
-      [sortingString]: sortOrder
+      [sortBy]: sortOrder
     })
-    .skip(limit * (page - 1) - (page - 1))
+    .skip(limit * (page - 1))
     .limit(limit)
     .toArray();
 
-  const result = messageRecords.map(file => {
-    return {...file,
+  const nameRecords = await namesCollection.find().toArray();
+
+  const messages = messageRecords.map(file => {
+    return {
+      ...file,
       names: file.nameIds.map(nameId => {
         return _.find(nameRecords, { nameId }) || null;
       })
     };
   });
-  
+
+  const count = await messagesCollection.countDocuments(query);
+
   const info = {
-    current_page: page,
-    all_pages: _.ceil(count / limit),
-    all_results: count
+    page,
+    pages: _.ceil(count / limit),
+    limit,
+    total: count
   };
 
-  res.send({ info, query, messages: result });
+  res.send({ messages, ...info });
 }
 
 module.exports = find;
