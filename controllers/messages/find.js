@@ -24,10 +24,28 @@ async function find(req, res, next) {
   let query = { $and: [] };
 
   if (search.length > 0) {
-    const searchRegex = new RegExp(search.map(_.escapeRegExp).join('.*'), 'i');
+    const searchRegexp = new RegExp(
+      `${search
+        .map(_.escapeRegExp)
+        .map(search => `(?=.*${search})`)
+        .join('')}.+`
+    );
 
     query['$and'].push({
-      $or: [{ 'lines.text.english': searchRegex }, { 'lines.text.japanese': searchRegex }]
+      $or: [
+        {
+          'lines.text.japanese': {
+            $regex: searchRegexp,
+            $options: 'ism'
+          }
+        },
+        {
+          'lines.text.english': {
+            $regex: searchRegexp,
+            $options: 'ism'
+          }
+        }
+      ]
     });
   }
 
@@ -50,24 +68,24 @@ async function find(req, res, next) {
   }
 
   if (names.length > 0) {
-    const namesQuery = [];
+    await Promise.all(
+      names.map(async name => {
+        const nameIdsToFind = await namesCollection.distinct('nameId', {
+          $or: [
+            {
+              japanese: new RegExp(_.escapeRegExp(name), 'i')
+            },
+            {
+              english: new RegExp(_.escapeRegExp(name), 'i')
+            }
+          ]
+        });
 
-    for (const name of names) {
-      const nameIdsToFind = await namesCollection.distinct('nameId', {
-        $or: [
-          {
-            japanese: new RegExp(_.escapeRegExp(name), 'i')
-          },
-          {
-            english: new RegExp(_.escapeRegExp(name), 'i')
-          }
-        ]
-      });
-
-      query['$and'].push({
-        $or: nameIdsToFind.map(nameId => ({ nameIds: nameId }))
-      });
-    }
+        query['$and'].push({
+          $or: nameIdsToFind.map(nameId => ({ nameIds: nameId }))
+        });
+      })
+    );
   }
 
   if (percentDone !== undefined) {
