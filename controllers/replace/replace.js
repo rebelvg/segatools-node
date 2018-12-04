@@ -24,7 +24,8 @@ async function replace(req, res) {
     const messageModel = new Message(messageRecord);
 
     messageModel.replace({
-      find,replace
+      find,
+      replace
     });
 
     const updatePromise = collection.updateOne(
