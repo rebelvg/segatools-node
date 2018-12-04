@@ -9,11 +9,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 const messages = require('./routes/messages');
 const names = require('./routes/names');
-const replace = require('./routes/replace');
+const lines = require('./routes/lines');
 
 app.use('/api/messages', messages);
 app.use('/api/names', names);
-app.use('/api/replace', replace);
+app.use('/api/lines', lines);
 
 app.use(function(req, res, next) {
   throw new Error('Not found.');

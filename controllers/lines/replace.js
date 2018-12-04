@@ -13,7 +13,7 @@ async function replace(req, res) {
   };
 
   const findQuery = {
-    'lines.text.english': new RegExp(find)
+    'lines.text.english': new RegExp(_.escapeRegExp(find))
   };
 
   const allMessages = await collection.find(findQuery).toArray();

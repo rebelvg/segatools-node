@@ -1,8 +1,8 @@
 const Joi = require('joi');
 
 const schema = Joi.object({
-  find: Joi.string(),
-  replace: Joi.string()
+  find: Joi.string().required(),
+  replace: Joi.string().required()
 }).required();
 
 function replaceValidation(req, res, next) {
