@@ -20,7 +20,9 @@ const schema = Joi.object({
   names: Joi.array()
     .items(Joi.string())
     .default([]),
-  percentDone: Joi.number()
+  percentDone: Joi.number(),
+  hideCompleted: Joi.bool().default(false),
+  hideChanged: Joi.bool().default(false)
 }).required();
 
 function findValidation(req, res, next) {

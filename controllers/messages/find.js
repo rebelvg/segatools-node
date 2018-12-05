@@ -15,7 +15,9 @@ async function find(req, res, next) {
     fileName,
     speakersCount,
     names = [],
-    percentDone
+    percentDone,
+    hideCompleted,
+    hideChanged
   } = req.query;
 
   const messagesCollection = mongoClient.collection('messages');
@@ -90,6 +92,14 @@ async function find(req, res, next) {
 
   if (percentDone !== undefined) {
     query['$and'].push({ percentDone });
+  }
+
+  if (hideCompleted) {
+    query['$and'].push({ percentDone: { $lt: 100 } });
+  }
+
+  if (hideChanged) {
+    query['$and'].push({ percentDone: 0 });
   }
 
   if (query['$and'].length === 0) {
