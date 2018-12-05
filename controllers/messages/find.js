@@ -15,6 +15,7 @@ async function find(req, res, next) {
     fileName,
     speakersCount,
     names = [],
+    namesStrict = [],
     percentDone,
     hideCompleted,
     hideChanged
@@ -79,6 +80,27 @@ async function find(req, res, next) {
             },
             {
               english: new RegExp(_.escapeRegExp(name), 'i')
+            }
+          ]
+        });
+
+        query['$and'].push({
+          $or: nameIdsToFind.map(nameId => ({ nameIds: nameId }))
+        });
+      })
+    );
+  }
+
+  if (namesStrict.length > 0) {
+    await Promise.all(
+      namesStrict.map(async name => {
+        const nameIdsToFind = await namesCollection.distinct('nameId', {
+          $or: [
+            {
+              japanese: _.escapeRegExp(namesStrict)
+            },
+            {
+              english: _.escapeRegExp(namesStrict)
             }
           ]
         });
