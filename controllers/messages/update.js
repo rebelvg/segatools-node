@@ -40,13 +40,13 @@ async function update(req, res, next) {
 
   const findQuery = !updateMany
     ? {
-      _id: messageRecord._id
-    }
-    : {
-      'lines.text.japanese': {
-        $in: updatedLines.map(updateLine => updateLine.japanese)
+        _id: messageRecord._id
       }
-    };
+    : {
+        'lines.text.japanese': {
+          $in: updatedLines.map(updateLine => updateLine.japanese)
+        }
+      };
 
   const allMessages = await collection.find(findQuery).toArray();
 

@@ -8,7 +8,7 @@ module.exports = {
     ecmaVersion: 2018
   },
   rules: {
-    indent: ['error', 2],
+    indent: ['off', 2],
     quotes: ['error', 'single', { avoidEscape: true, allowTemplateLiterals: true }],
     semi: ['error', 'always'],
     'eol-last': ['error', 'always'],
