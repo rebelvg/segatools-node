@@ -4,19 +4,21 @@ const { inspect } = require('util');
 async function find(req, res, next) {
   const mongoClient = req.app.get('mongoClient');
 
+  const { search, hideCompleted = false } = req.query;
+
   const namesCollection = mongoClient.collection('names');
 
-  const searchRegex = new RegExp(_.escapeRegExp(req.query.search), 'i');
+  const searchRegex = new RegExp(_.escapeRegExp(search), 'i');
 
-  let query = {
+  const query = {
     $and: [
       {
-        $or: [{ english: searchRegex }, { japanese: searchRegex }]
+        $or: [{ japanese: searchRegex }, { english: searchRegex }]
       }
     ]
   };
 
-  if (req.query.hideCompleted) {
+  if (hideCompleted) {
     query['$and'].push({ english: '' });
   }
 

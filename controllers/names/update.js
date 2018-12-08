@@ -6,7 +6,8 @@ const Name = require('../../models/name');
 async function update(req, res, next) {
   const mongoClient = req.app.get('mongoClient');
 
-  const nameId = req.params.id;
+  const { id: nameId } = req.params;
+
   const { english } = req.body;
 
   const nameCollection = mongoClient.collection('names');
