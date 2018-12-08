@@ -51,7 +51,7 @@ const importedSpeakersData = require('./import/speakers.json');
 
   await Promise.all(importPromises);
 
-  console.log('imported done.');
+  console.log('import done.');
 
   await mongoClient.close();
 })();
