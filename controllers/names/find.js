@@ -8,23 +8,27 @@ async function find(req, res, next) {
 
   const namesCollection = mongoClient.collection('names');
 
-  const searchRegex = new RegExp(_.escapeRegExp(search), 'i');
+  let query = { $and: [] };
 
-  const query = {
-    $and: [
-      {
-        $or: [{ japanese: searchRegex }, { english: searchRegex }]
-      }
-    ]
-  };
+  if (search) {
+    const searchRegex = new RegExp(_.escapeRegExp(search), 'i');
+
+    query['$and'].push({
+      $or: [{ japanese: searchRegex }, { english: searchRegex }]
+    });
+  }
 
   if (hideCompleted) {
     query['$and'].push({ english: '' });
   }
 
-  const result = await namesCollection.find(query).toArray();
+  if (query['$and'].length === 0) {
+    query = {};
+  }
 
   console.log(inspect(query, { showHidden: false, depth: null }));
+
+  const result = await namesCollection.find(query).toArray();
 
   res.send({ names: result });
 }
