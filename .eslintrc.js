@@ -18,6 +18,12 @@ module.exports = {
     eqeqeq: ['error', 'always'],
     curly: ['error', 'all'],
     'no-multiple-empty-lines': ['error', { max: 1 }],
-    'prefer-const': ['error']
+    'prefer-const': ['error'],
+    'no-unused-vars': [
+      'error',
+      {
+        args: 'none'
+      }
+    ]
   }
 };

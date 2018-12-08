@@ -1,4 +1,3 @@
-const fs = require('fs');
 const _ = require('lodash');
 const { MongoClient } = require('mongodb');
 const { ObjectID } = require('mongodb');

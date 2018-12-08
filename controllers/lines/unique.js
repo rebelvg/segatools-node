@@ -1,5 +1,4 @@
 const _ = require('lodash');
-const { inspect } = require('util');
 
 async function find(req, res, next) {
   const mongoClient = req.app.get('mongoClient');
