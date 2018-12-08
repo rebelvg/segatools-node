@@ -14,6 +14,9 @@ const schema = Joi.object({
   search: Joi.array()
     .items(Joi.string())
     .default([]),
+  searchStrict: Joi.array()
+    .items(Joi.string())
+    .default([]),
   chapterName: Joi.string(),
   fileName: Joi.string(),
   speakersCount: Joi.number(),
@@ -23,9 +26,9 @@ const schema = Joi.object({
   namesStrict: Joi.array()
     .items(Joi.string())
     .default([]),
-  percentDone: Joi.number(),
+  hideChanged: Joi.bool().default(false),
   hideCompleted: Joi.bool().default(false),
-  hideChanged: Joi.bool().default(false)
+  hideNotCompleted: Joi.bool().default(false)
 }).required();
 
 function findValidation(req, res, next) {

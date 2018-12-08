@@ -1,4 +1,3 @@
-const fs = require('fs');
 const _ = require('lodash');
 const { MongoClient } = require('mongodb');
 const { ObjectID } = require('mongodb');
@@ -30,7 +29,7 @@ const importedNamesData = require('./import/names.json');
 
   await Promise.all(importPromises);
 
-  console.log('imported done.');
+  console.log('import done.');
 
   await mongoClient.close();
 })();

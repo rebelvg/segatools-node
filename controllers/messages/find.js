@@ -1,5 +1,4 @@
 const _ = require('lodash');
-const { ObjectID } = require('mongodb');
 const { inspect } = require('util');
 
 async function find(req, res, next) {
@@ -11,14 +10,16 @@ async function find(req, res, next) {
     sortBy = 'timeUpdated',
     sortOrder = -1,
     search = [],
+    searchStrict = [],
     chapterName,
     fileName,
     speakersCount,
     names = [],
     namesStrict = [],
     percentDone,
-    hideCompleted,
-    hideChanged
+    hideChanged = false,
+    hideCompleted = false,
+    hideNotCompleted = false
   } = req.query;
 
   const messagesCollection = mongoClient.collection('messages');
@@ -49,6 +50,21 @@ async function find(req, res, next) {
           }
         }
       ]
+    });
+  }
+
+  if (searchStrict.length > 0) {
+    searchStrict.forEach(strictLine => {
+      query['$and'].push({
+        $or: [
+          {
+            'lines.text.japanese': strictLine
+          },
+          {
+            'lines.text.english': strictLine
+          }
+        ]
+      });
     });
   }
 
@@ -97,10 +113,10 @@ async function find(req, res, next) {
         const nameIdsToFind = await namesCollection.distinct('nameId', {
           $or: [
             {
-              japanese: _.escapeRegExp(namesStrict)
+              japanese: name
             },
             {
-              english: _.escapeRegExp(namesStrict)
+              english: name
             }
           ]
         });
@@ -116,12 +132,16 @@ async function find(req, res, next) {
     query['$and'].push({ percentDone });
   }
 
+  if (hideChanged) {
+    query['$and'].push({ percentDone: 0 });
+  }
+
   if (hideCompleted) {
     query['$and'].push({ percentDone: { $lt: 100 } });
   }
 
-  if (hideChanged) {
-    query['$and'].push({ percentDone: 0 });
+  if (hideNotCompleted) {
+    query['$and'].push({ percentDone: 100 });
   }
 
   if (query['$and'].length === 0) {

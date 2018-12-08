@@ -1,5 +1,3 @@
-const _ = require('lodash');
-
 class Name {
   constructor({ nameId, japanese, english, timeUpdated }) {
     this.nameId = nameId;

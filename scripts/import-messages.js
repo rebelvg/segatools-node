@@ -1,4 +1,3 @@
-const fs = require('fs');
 const _ = require('lodash');
 const { MongoClient } = require('mongodb');
 const { ObjectID } = require('mongodb');
@@ -51,7 +50,7 @@ const importedSpeakersData = require('./import/speakers.json');
 
   await Promise.all(importPromises);
 
-  console.log('imported done.');
+  console.log('import done.');
 
   await mongoClient.close();
 })();

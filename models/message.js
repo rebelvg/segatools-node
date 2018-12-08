@@ -54,6 +54,7 @@ class Message {
       if (!_.includes(line.text.english, find)) {
         return;
       }
+
       line.text.english = _.replace(line.text.english, find, replace);
     });
   }

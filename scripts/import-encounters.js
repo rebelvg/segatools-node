@@ -1,4 +1,3 @@
-const fs = require('fs');
 const _ = require('lodash');
 const { MongoClient } = require('mongodb');
 const { ObjectID } = require('mongodb');
@@ -8,7 +7,7 @@ const Message = require('../models/message');
 const mongoUrl = 'mongodb://localhost';
 const dbName = 'segatools';
 
-const importedMessagesData = require('./import/messagesEncount.json');
+const importedMessagesData = require('./import/messages-encounters.json');
 
 (async () => {
   const mongoClient = await MongoClient.connect(
@@ -24,16 +23,12 @@ const importedMessagesData = require('./import/messagesEncount.json');
     const lines = [];
 
     _.forEach(message.Japanese, (japaneseLine, index) => {
-      let speakerId = null;
-      if (japaneseLine !== '') {
-        speakerId = 113;
-      }
       lines.push({
         text: {
           japanese: japaneseLine || null,
           english: message.English[index] || null
         },
-        speakerId: speakerId || null
+        speakerId: japaneseLine ? 113 : null
       });
     });
 
@@ -41,7 +36,6 @@ const importedMessagesData = require('./import/messagesEncount.json');
       fileName: message.Filename,
       chapterName: 'Random Encounters',
       lines,
-      nameIds: 113,
       timeUpdated: new Date(message.timestamp * 1000)
     });
 
