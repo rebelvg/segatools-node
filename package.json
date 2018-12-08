@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "prepush": "prettier --write \"**/*.js\" && eslint . --fix",
-    "start": "node index.js",
+    "start": "node .",
     "import-data": "node scripts/import-messages.js && node scripts/import-encounters.js && node scripts/import-names.js"
   },
   "repository": {
