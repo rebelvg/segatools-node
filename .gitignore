@@ -1,4 +1,4 @@
-.idea
-.vscode
-/node_modules
-/scripts/import
+.idea/
+.vscode/
+node_modules/
+scripts/import/
