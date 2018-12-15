@@ -15,11 +15,11 @@ app.use('/api/messages', messages);
 app.use('/api/names', names);
 app.use('/api/lines', lines);
 
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
   throw new Error('Not found.');
 });
 
-app.use(function(err, req, res, next) {
+app.use((err, req, res, next) => {
   console.error(err);
 
   res.status(500).json({ error: err.message });
@@ -32,7 +32,7 @@ process.on('unhandledRejection', (reason, p) => {
 MongoClient.connect(
   'mongodb://localhost/',
   { useNewUrlParser: true },
-  async function(err, client) {
+  async (err, client) => {
     if (err) {
       throw err;
     }
