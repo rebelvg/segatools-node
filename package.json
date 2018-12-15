@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "prepush": "prettier --write \"**/*.js\" && eslint . --fix",
+    "prepush": "eslint . && prettier --write \"**/*.js\"",
     "start": "node .",
     "import-data": "node scripts/import-messages.js && node scripts/import-encounters.js && node scripts/import-names.js"
   },

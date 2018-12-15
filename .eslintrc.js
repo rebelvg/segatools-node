@@ -22,8 +22,12 @@ module.exports = {
     'no-unused-vars': [
       'error',
       {
-        args: 'none'
+        args: 'none',
+        varsIgnorePattern: '^_'
       }
-    ]
+    ],
+    'no-empty': ['error', { allowEmptyCatch: true }],
+    'prefer-arrow-callback': ['error'],
+    'require-await': 'error'
   }
 };
