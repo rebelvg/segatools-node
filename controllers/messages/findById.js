@@ -1,8 +1,10 @@
 const _ = require('lodash');
 const { ObjectID } = require('mongodb');
 
-async function findById(req, res, next) {
-  const mongoClient = req.app.get('mongoClient');
+async function findById(ctx, next) {
+  const { request: req } = ctx;
+
+  const mongoClient = ctx.mongoClient;
 
   const messageId = req.params.id;
 
@@ -52,7 +54,7 @@ async function findById(req, res, next) {
     nextMessageId: _.get(nextMessageRecord, '_id', null)
   };
 
-  res.send(result);
+  ctx.body = result;
 }
 
 module.exports = findById;

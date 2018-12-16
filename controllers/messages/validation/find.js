@@ -31,7 +31,9 @@ const schema = Joi.object({
   hideNotCompleted: Joi.bool().default(false)
 }).required();
 
-function findValidation(req, res, next) {
+function findValidation(ctx, next) {
+  const { request: req } = ctx;
+
   const { error, value } = Joi.validate(req.query, schema, {
     abortEarly: false
   });

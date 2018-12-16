@@ -2,8 +2,10 @@ const { ObjectID } = require('mongodb');
 
 const Message = require('../../models/message');
 
-async function update(req, res, next) {
-  const mongoClient = req.app.get('mongoClient');
+async function update(ctx, next) {
+  const { request: req } = ctx;
+
+  const mongoClient = ctx.mongoClient;
 
   const messageId = req.params.id;
   const { chapterName, updatedLines = [], updateMany = true } = req.body;
@@ -74,7 +76,7 @@ async function update(req, res, next) {
 
   updateResult.messagesUpdated = updateOperations.length;
 
-  res.send(updateResult);
+  ctx.body = updateResult;
 }
 
 module.exports = update;

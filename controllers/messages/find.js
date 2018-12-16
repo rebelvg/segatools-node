@@ -1,8 +1,10 @@
 const _ = require('lodash');
 const { inspect } = require('util');
 
-async function find(req, res, next) {
-  const mongoClient = req.app.get('mongoClient');
+async function find(ctx, next) {
+  const { request: req } = ctx;
+
+  const mongoClient = ctx.mongoClient;
 
   const {
     page = 1,
@@ -179,7 +181,7 @@ async function find(req, res, next) {
     total: count
   };
 
-  res.send({ messages, ...info });
+  ctx.body = { messages, ...info };
 }
 
 module.exports = find;

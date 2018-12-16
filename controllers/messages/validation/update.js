@@ -12,7 +12,9 @@ const schema = Joi.object({
   updateMany: Joi.boolean().required()
 }).required();
 
-function updateValidation(req, res, next) {
+function updateValidation(ctx, next) {
+  const { request: req } = ctx;
+
   const { error, value } = Joi.validate(req.body, schema, {
     abortEarly: false
   });

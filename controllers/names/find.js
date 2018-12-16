@@ -1,8 +1,10 @@
 const _ = require('lodash');
 const { inspect } = require('util');
 
-async function find(req, res, next) {
-  const mongoClient = req.app.get('mongoClient');
+async function find(ctx, next) {
+  const { request: req } = ctx;
+
+  const mongoClient = ctx.mongoClient;
 
   const { search, hideCompleted = false } = req.query;
 
@@ -30,7 +32,7 @@ async function find(req, res, next) {
 
   const result = await namesCollection.find(query).toArray();
 
-  res.send({ names: result });
+  ctx.body = { names: result };
 }
 
 module.exports = find;

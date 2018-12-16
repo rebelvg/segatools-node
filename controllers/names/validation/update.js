@@ -4,7 +4,9 @@ const schema = Joi.object({
   english: Joi.string().required()
 }).required();
 
-function updateValidation(req, res, next) {
+function updateValidation(ctx, next) {
+  const { request: req } = ctx;
+
   const { error, value } = Joi.validate(req.body, schema, {
     abortEarly: false
   });
