@@ -4,7 +4,7 @@ const Message = require('../../models/message');
 async function replace(ctx) {
   const { request } = ctx;
 
-  const mongoClient = ctx.mongoClient;
+  const { mongoClient } = ctx;
 
   const { find, replace } = request.body;
 

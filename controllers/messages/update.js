@@ -5,7 +5,7 @@ const Message = require('../../models/message');
 async function update(ctx, next) {
   const { request } = ctx;
 
-  const mongoClient = ctx.mongoClient;
+  const { mongoClient } = ctx;
 
   const messageId = ctx.params.id;
   const { chapterName, updatedLines = [], updateMany = true } = request.body;

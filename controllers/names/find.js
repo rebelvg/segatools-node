@@ -2,7 +2,7 @@ const _ = require('lodash');
 const { inspect } = require('util');
 
 async function find(ctx, next) {
-  const mongoClient = ctx.mongoClient;
+  const { mongoClient } = ctx;
 
   const { search, hideCompleted = false } = ctx.state.query;
 

@@ -5,7 +5,7 @@ const Name = require('../../models/name');
 async function update(ctx, next) {
   const { request } = ctx;
 
-  const mongoClient = ctx.mongoClient;
+  const { mongoClient } = ctx;
 
   const { id: nameId } = ctx.params;
 

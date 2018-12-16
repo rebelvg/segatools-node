@@ -1,7 +1,7 @@
 const _ = require('lodash');
 
 async function find(ctx, next) {
-  const mongoClient = ctx.mongoClient;
+  const { mongoClient } = ctx;
 
   const messageCollection = mongoClient.collection('messages');
 
