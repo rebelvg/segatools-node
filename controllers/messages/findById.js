@@ -2,8 +2,6 @@ const _ = require('lodash');
 const { ObjectID } = require('mongodb');
 
 async function findById(ctx, next) {
-  const { request: req } = ctx;
-
   const mongoClient = ctx.mongoClient;
 
   const messageId = ctx.params.id;
