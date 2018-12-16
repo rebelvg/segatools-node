@@ -20,8 +20,6 @@
   },
   "homepage": "https://github.com/SlowpokeVG/Segatools-node#readme",
   "dependencies": {
-    "body-parser": "^1.18.3",
-    "express": "^4.16.4",
     "joi": "^14.3.0",
     "koa": "^2.6.2",
     "koa-bodyparser": "^4.2.1",
