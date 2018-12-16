@@ -2,11 +2,11 @@ const _ = require('lodash');
 const Message = require('../../models/message');
 
 async function replace(ctx) {
-  const { request: req } = ctx;
+  const { request } = ctx;
 
   const mongoClient = ctx.mongoClient;
 
-  const { find, replace } = req.body;
+  const { find, replace } = request.body;
 
   const collection = mongoClient.collection('messages');
 

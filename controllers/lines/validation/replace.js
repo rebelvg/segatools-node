@@ -6,14 +6,14 @@ const schema = Joi.object({
 }).required();
 
 function replaceValidation(ctx, next) {
-  const { request: req } = ctx;
+  const { request } = ctx;
 
-  const { error, value } = Joi.validate(req.body, schema, {
+  const { error, value } = Joi.validate(request.body, schema, {
     abortEarly: false
   });
 
   if (!error) {
-    req.body = value;
+    request.body = value;
 
     return next();
   }

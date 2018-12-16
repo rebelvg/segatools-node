@@ -3,12 +3,12 @@ const { ObjectID } = require('mongodb');
 const Message = require('../../models/message');
 
 async function update(ctx, next) {
-  const { request: req } = ctx;
+  const { request } = ctx;
 
   const mongoClient = ctx.mongoClient;
 
   const messageId = ctx.params.id;
-  const { chapterName, updatedLines = [], updateMany = true } = req.body;
+  const { chapterName, updatedLines = [], updateMany = true } = request.body;
 
   const collection = mongoClient.collection('messages');
 

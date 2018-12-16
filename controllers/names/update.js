@@ -3,13 +3,13 @@ const { ObjectID } = require('mongodb');
 const Name = require('../../models/name');
 
 async function update(ctx, next) {
-  const { request: req } = ctx;
+  const { request } = ctx;
 
   const mongoClient = ctx.mongoClient;
 
   const { id: nameId } = ctx.params;
 
-  const { english } = req.body;
+  const { english } = request.body;
 
   const nameCollection = mongoClient.collection('names');
 
