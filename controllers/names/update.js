@@ -7,7 +7,7 @@ async function update(ctx, next) {
 
   const mongoClient = ctx.mongoClient;
 
-  const { id: nameId } = req.params;
+  const { id: nameId } = ctx.params;
 
   const { english } = req.body;
 

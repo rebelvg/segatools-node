@@ -2,11 +2,9 @@ const _ = require('lodash');
 const { inspect } = require('util');
 
 async function find(ctx, next) {
-  const { request: req } = ctx;
-
   const mongoClient = ctx.mongoClient;
 
-  const { search, hideCompleted = false } = req.query;
+  const { search, hideCompleted = false } = ctx.state.query;
 
   const namesCollection = mongoClient.collection('names');
 

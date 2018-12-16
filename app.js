@@ -8,12 +8,15 @@ const lines = require('./routes/lines');
 
 const app = new Koa();
 
+require('koa-qs')(app);
 app.use(bodyParser());
 
 app.use(async (ctx, next) => {
   try {
     await next();
   } catch (err) {
+    console.error(err);
+
     ctx.status = err.status || 500;
     ctx.body = err.message;
   }

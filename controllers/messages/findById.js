@@ -6,7 +6,7 @@ async function findById(ctx, next) {
 
   const mongoClient = ctx.mongoClient;
 
-  const messageId = req.params.id;
+  const messageId = ctx.params.id;
 
   const messagesCollection = mongoClient.collection('messages');
   const namesCollection = mongoClient.collection('names');

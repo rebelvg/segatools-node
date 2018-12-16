@@ -6,14 +6,12 @@ const schema = Joi.object({
 }).required();
 
 function findValidation(ctx, next) {
-  const { request: req } = ctx;
-
-  const { error, value } = Joi.validate(req.query, schema, {
+  const { error, value } = Joi.validate(ctx.query, schema, {
     abortEarly: false
   });
 
   if (!error) {
-    req.query = value;
+    ctx.state.query = value;
 
     return next();
   }

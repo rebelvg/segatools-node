@@ -7,7 +7,7 @@ async function update(ctx, next) {
 
   const mongoClient = ctx.mongoClient;
 
-  const messageId = req.params.id;
+  const messageId = ctx.params.id;
   const { chapterName, updatedLines = [], updateMany = true } = req.body;
 
   const collection = mongoClient.collection('messages');
