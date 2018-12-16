@@ -1,7 +1,7 @@
 const _ = require('lodash');
 
-async function find(req, res, next) {
-  const mongoClient = req.app.get('mongoClient');
+async function find(ctx, next) {
+  const { mongoClient } = ctx;
 
   const messageCollection = mongoClient.collection('messages');
 
@@ -17,7 +17,7 @@ async function find(req, res, next) {
 
   const result = _.uniqBy(allLines, 'japanese');
 
-  res.send(result);
+  ctx.body = result;
 }
 
 module.exports = find;

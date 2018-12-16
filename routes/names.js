@@ -1,6 +1,6 @@
-const express = require('express');
+const Router = require('koa-router');
 
-const asyncMiddleware = require('../helpers/async-middleware');
+const router = new Router();
 
 const find = require('../controllers/names/find');
 const update = require('../controllers/names/update');
@@ -8,9 +8,7 @@ const update = require('../controllers/names/update');
 const findValidation = require('../controllers/names/validation/find');
 const updateValidation = require('../controllers/names/validation/update');
 
-const router = express.Router();
-
-router.get('/', findValidation, asyncMiddleware(find));
-router.post('/:id', updateValidation, asyncMiddleware(update));
+router.get('/', findValidation, find);
+router.post('/:id', updateValidation, update);
 
 module.exports = router;

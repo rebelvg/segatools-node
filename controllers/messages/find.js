@@ -1,8 +1,8 @@
 const _ = require('lodash');
 const { inspect } = require('util');
 
-async function find(req, res, next) {
-  const mongoClient = req.app.get('mongoClient');
+async function find(ctx, next) {
+  const { mongoClient } = ctx;
 
   const {
     page = 1,
@@ -20,7 +20,7 @@ async function find(req, res, next) {
     hideChanged = false,
     hideCompleted = false,
     hideNotCompleted = false
-  } = req.query;
+  } = ctx.state.query;
 
   const messagesCollection = mongoClient.collection('messages');
   const namesCollection = mongoClient.collection('names');
@@ -179,7 +179,7 @@ async function find(req, res, next) {
     total: count
   };
 
-  res.send({ messages, ...info });
+  ctx.body = { messages, ...info };
 }
 
 module.exports = find;

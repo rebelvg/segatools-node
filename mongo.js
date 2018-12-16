@@ -10,6 +10,6 @@ MongoClient.connect(
       throw err;
     }
 
-    app.set('mongoClient', client.db('segatools'));
+    app.context.mongoClient = client.db('segatools');
   }
 );

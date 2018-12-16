@@ -4,13 +4,15 @@ const schema = Joi.object({
   english: Joi.string().required()
 }).required();
 
-function updateValidation(req, res, next) {
-  const { error, value } = Joi.validate(req.body, schema, {
+function updateValidation(ctx, next) {
+  const { request } = ctx;
+
+  const { error, value } = Joi.validate(request.body, schema, {
     abortEarly: false
   });
 
   if (!error) {
-    req.body = value;
+    request.body = value;
 
     return next();
   }

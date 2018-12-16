@@ -1,26 +1,37 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-
-const app = express();
-
-app.use(bodyParser.json());
+const Koa = require('koa');
+const bodyParser = require('koa-bodyparser');
+const Router = require('koa-router');
 
 const messages = require('./routes/messages');
 const names = require('./routes/names');
 const lines = require('./routes/lines');
 
-app.use('/api/messages', messages);
-app.use('/api/names', names);
-app.use('/api/lines', lines);
+const app = new Koa();
 
-app.use((req, res, next) => {
-  throw new Error('Not found.');
+require('koa-qs')(app);
+app.use(bodyParser());
+
+app.use(async (ctx, next) => {
+  try {
+    await next();
+  } catch (err) {
+    console.error(err);
+
+    ctx.status = err.status || 500;
+    ctx.body = err.message;
+  }
 });
 
-app.use((err, req, res, next) => {
-  console.error(err);
+const router = new Router();
 
-  res.status(500).json({ error: err.message });
+router.use('/api/messages', messages.routes());
+router.use('/api/names', names.routes());
+router.use('/api/lines', lines.routes());
+
+app.use(router.routes());
+
+app.use(ctx => {
+  ctx.throw(404, 'Not Found.');
 });
 
 module.exports = app;

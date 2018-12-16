@@ -2,11 +2,13 @@ const { ObjectID } = require('mongodb');
 
 const Message = require('../../models/message');
 
-async function update(req, res, next) {
-  const mongoClient = req.app.get('mongoClient');
+async function update(ctx, next) {
+  const { request } = ctx;
 
-  const messageId = req.params.id;
-  const { chapterName, updatedLines = [], updateMany = true } = req.body;
+  const { mongoClient } = ctx;
+
+  const messageId = ctx.params.id;
+  const { chapterName, updatedLines = [], updateMany = true } = request.body;
 
   const collection = mongoClient.collection('messages');
 
@@ -74,7 +76,7 @@ async function update(req, res, next) {
 
   updateResult.messagesUpdated = updateOperations.length;
 
-  res.send(updateResult);
+  ctx.body = updateResult;
 }
 
 module.exports = update;

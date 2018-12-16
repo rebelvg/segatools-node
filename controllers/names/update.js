@@ -2,12 +2,14 @@ const { ObjectID } = require('mongodb');
 
 const Name = require('../../models/name');
 
-async function update(req, res, next) {
-  const mongoClient = req.app.get('mongoClient');
+async function update(ctx, next) {
+  const { request } = ctx;
 
-  const { id: nameId } = req.params;
+  const { mongoClient } = ctx;
 
-  const { english } = req.body;
+  const { id: nameId } = ctx.params;
+
+  const { english } = request.body;
 
   const nameCollection = mongoClient.collection('names');
 
@@ -38,7 +40,7 @@ async function update(req, res, next) {
     nameUpdated: nameRecord.nameId
   };
 
-  res.send(updateResult);
+  ctx.body = updateResult;
 }
 
 module.exports = update;

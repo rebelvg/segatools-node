@@ -1,10 +1,12 @@
 const _ = require('lodash');
 const Message = require('../../models/message');
 
-async function replace(req, res) {
-  const mongoClient = req.app.get('mongoClient');
+async function replace(ctx) {
+  const { request } = ctx;
 
-  const { find, replace } = req.body;
+  const { mongoClient } = ctx;
+
+  const { find, replace } = request.body;
 
   const collection = mongoClient.collection('messages');
 
@@ -44,7 +46,7 @@ async function replace(req, res) {
 
   updateResult.messagesUpdated = updateOperations.length;
 
-  res.send(updateResult);
+  ctx.body = updateResult;
 }
 
 module.exports = replace;

@@ -5,13 +5,13 @@ const schema = Joi.object({
   hideCompleted: Joi.bool().default(false)
 }).required();
 
-function findValidation(req, res, next) {
-  const { error, value } = Joi.validate(req.query, schema, {
+function findValidation(ctx, next) {
+  const { error, value } = Joi.validate(ctx.query, schema, {
     abortEarly: false
   });
 
   if (!error) {
-    req.query = value;
+    ctx.state.query = value;
 
     return next();
   }
