@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "prepush": "eslint . && prettier --write \"**/*.js\"",
+    "prepush": "yarn run lint",
+    "lint": "eslint . && prettier --list-different \"**/*.{ts,js,json,css,md}\"",
+    "lint:fix": "eslint . --fix && prettier --write \"**/*.{ts,js,json,css,md}\"",
     "start": "node .",
     "import-data": "node scripts/import-messages.js && node scripts/import-encounters.js && node scripts/import-names.js"
   },
