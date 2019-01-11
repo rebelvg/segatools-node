@@ -2,12 +2,12 @@
   "name": "segatools-node",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
     "prepush": "yarn run lint",
     "lint": "eslint . && prettier --list-different \"**/*.{ts,js,json,css,md}\"",
     "lint:fix": "eslint . --fix && prettier --write \"**/*.{ts,js,json,css,md}\"",
-    "start": "node .",
+    "start": "ts-node .",
     "import-data": "node scripts/import-messages.js && node scripts/import-encounters.js && node scripts/import-names.js"
   },
   "repository": {
@@ -31,6 +31,11 @@
     "mongodb": "^3.1.10"
   },
   "devDependencies": {
+    "@types/koa": "^2.0.48",
+    "@types/koa-bodyparser": "^4.2.1",
+    "@types/koa-router": "^7.0.37",
+    "@types/mongodb": "^3.1.18",
+    "@types/node": "^10.12.18",
     "eslint": "^5.9.0",
     "husky": "^1.2.0",
     "prettier": "^1.15.2",

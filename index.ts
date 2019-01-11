@@ -1,6 +1,6 @@
-const app = require('./app');
+import { app } from './app';
 
-require('./mongo');
+import './mongo';
 
 process.on('unhandledRejection', (reason, p) => {
   throw reason;

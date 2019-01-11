@@ -1,14 +1,15 @@
-const Koa = require('koa');
-const bodyParser = require('koa-bodyparser');
-const Router = require('koa-router');
+import * as Koa from 'koa';
+import * as bodyParser from 'koa-bodyparser';
+import * as Router from 'koa-router';
+import * as koaQs from 'koa-qs';
 
 const messages = require('./routes/messages');
 const names = require('./routes/names');
 const lines = require('./routes/lines');
 
-const app = new Koa();
+export const app = new Koa();
 
-require('koa-qs')(app);
+koaQs(app);
 app.use(bodyParser());
 
 app.use(async (ctx, next) => {
@@ -33,5 +34,3 @@ app.use(router.routes());
 app.use(ctx => {
   ctx.throw(404, 'Not Found.');
 });
-
-module.exports = app;

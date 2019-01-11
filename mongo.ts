@@ -1,6 +1,6 @@
-const { MongoClient } = require('mongodb');
+import { MongoClient } from 'mongodb';
 
-const app = require('./app');
+import { app } from './app';
 
 MongoClient.connect(
   'mongodb://localhost/',
