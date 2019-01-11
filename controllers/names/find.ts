@@ -1,14 +1,14 @@
-const _ = require('lodash');
-const { inspect } = require('util');
+import * as _ from 'lodash';
+import { inspect } from 'util';
 
-async function find(ctx, next) {
+export async function find(ctx, next) {
   const { mongoClient } = ctx;
 
   const { search, hideCompleted = false } = ctx.state.query;
 
   const namesCollection = mongoClient.collection('names');
 
-  let query = { $and: [] };
+  let query: any = { $and: [] };
 
   if (search) {
     const searchRegex = new RegExp(_.escapeRegExp(search), 'i');
@@ -32,5 +32,3 @@ async function find(ctx, next) {
 
   ctx.body = { names: result };
 }
-
-module.exports = find;

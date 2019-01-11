@@ -1,7 +1,7 @@
-const _ = require('lodash');
-const { ObjectID } = require('mongodb');
+import * as _ from 'lodash';
+import { ObjectID } from 'mongodb';
 
-async function findById(ctx, next) {
+export async function findById(ctx, next) {
   const { mongoClient } = ctx;
 
   const messageId = ctx.params.id;
@@ -54,5 +54,3 @@ async function findById(ctx, next) {
 
   ctx.body = result;
 }
-
-module.exports = findById;

@@ -3,13 +3,14 @@ import * as bodyParser from 'koa-bodyparser';
 import * as Router from 'koa-router';
 import * as koaQs from 'koa-qs';
 
-const messages = require('./routes/messages');
-const names = require('./routes/names');
-const lines = require('./routes/lines');
+import { router as messages } from './routes/messages';
+import { router as names } from './routes/names';
+import { router as lines } from './routes/lines';
 
 export const app = new Koa();
 
 koaQs(app);
+
 app.use(bodyParser());
 
 app.use(async (ctx, next) => {

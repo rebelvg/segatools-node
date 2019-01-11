@@ -1,8 +1,8 @@
-const { ObjectID } = require('mongodb');
+import { ObjectID } from 'mongodb';
 
-const Name = require('../../models/name');
+import { Name } from '../../models/name';
 
-async function update(ctx, next) {
+export async function update(ctx, next) {
   const { request } = ctx;
 
   const { mongoClient } = ctx;
@@ -42,5 +42,3 @@ async function update(ctx, next) {
 
   ctx.body = updateResult;
 }
-
-module.exports = update;

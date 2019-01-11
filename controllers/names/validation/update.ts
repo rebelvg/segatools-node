@@ -1,11 +1,10 @@
-const Joi = require('joi');
+import * as Joi from 'joi';
 
 const schema = Joi.object({
-  find: Joi.string().required(),
-  replace: Joi.string().required()
+  english: Joi.string().required()
 }).required();
 
-function replaceValidation(ctx, next) {
+export function updateValidation(ctx, next) {
   const { request } = ctx;
 
   const { error, value } = Joi.validate(request.body, schema, {
@@ -20,5 +19,3 @@ function replaceValidation(ctx, next) {
 
   throw error;
 }
-
-module.exports = replaceValidation;

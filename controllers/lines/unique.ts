@@ -1,6 +1,6 @@
-const _ = require('lodash');
+import * as _ from 'lodash';
 
-async function find(ctx, next) {
+export async function unique(ctx, next) {
   const { mongoClient } = ctx;
 
   const messageCollection = mongoClient.collection('messages');
@@ -19,5 +19,3 @@ async function find(ctx, next) {
 
   ctx.body = result;
 }
-
-module.exports = find;

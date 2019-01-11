@@ -1,7 +1,8 @@
-const _ = require('lodash');
-const Message = require('../../models/message');
+import * as _ from 'lodash';
 
-async function replace(ctx) {
+import { Message } from '../../models/message';
+
+export async function replace(ctx) {
   const { request } = ctx;
 
   const { mongoClient } = ctx;
@@ -48,5 +49,3 @@ async function replace(ctx) {
 
   ctx.body = updateResult;
 }
-
-module.exports = replace;

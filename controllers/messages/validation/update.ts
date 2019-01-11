@@ -1,4 +1,4 @@
-const Joi = require('joi');
+import * as Joi from 'joi';
 
 const schema = Joi.object({
   chapterName: Joi.string(),
@@ -12,7 +12,7 @@ const schema = Joi.object({
   updateMany: Joi.boolean().required()
 }).required();
 
-function updateValidation(ctx, next) {
+export function updateValidation(ctx, next) {
   const { request } = ctx;
 
   const { error, value } = Joi.validate(request.body, schema, {
@@ -27,5 +27,3 @@ function updateValidation(ctx, next) {
 
   throw error;
 }
-
-module.exports = updateValidation;
