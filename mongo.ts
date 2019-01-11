@@ -1,15 +1,17 @@
-import { MongoClient } from 'mongodb';
+import { MongoClient, Db } from 'mongodb';
 
-import { app } from './app';
+export async function getMongoClient(): Promise<Db> {
+  return new Promise(resolve => {
+    MongoClient.connect(
+      'mongodb://localhost/',
+      { useNewUrlParser: true },
+      (err, client) => {
+        if (err) {
+          throw err;
+        }
 
-MongoClient.connect(
-  'mongodb://localhost/',
-  { useNewUrlParser: true },
-  (err, client) => {
-    if (err) {
-      throw err;
-    }
-
-    app.context.mongoClient = client.db('segatools');
-  }
-);
+        return resolve(client.db('segatools'));
+      }
+    );
+  });
+}

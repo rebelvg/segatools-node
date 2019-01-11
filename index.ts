@@ -1,11 +1,17 @@
 import { app } from './app';
 
-import './mongo';
+import { getMongoClient } from './mongo';
 
 process.on('unhandledRejection', (reason, p) => {
   throw reason;
 });
 
-app.listen(3000, () => {
-  console.log('server is running.');
-});
+(async () => {
+  const mongoClient = await getMongoClient();
+
+  app.context.mongoClient = mongoClient;
+
+  app.listen(3000, () => {
+    console.log('server is running.');
+  });
+})();
