@@ -1,6 +1,5 @@
-const _ = require('lodash');
-const { MongoClient } = require('mongodb');
-const { ObjectID } = require('mongodb');
+import * as _ from 'lodash';
+import { MongoClient, ObjectID } from 'mongodb';
 
 const mongoUrl = 'mongodb://localhost';
 const dbName = 'segatools';

@@ -8,7 +8,7 @@
     "lint": "eslint . && prettier --list-different \"**/*.{ts,js,json,css,md}\"",
     "lint:fix": "eslint . --fix && prettier --write \"**/*.{ts,js,json,css,md}\"",
     "start": "ts-node .",
-    "import-data": "node scripts/import-messages.js && node scripts/import-encounters.js && node scripts/import-names.js"
+    "import-data": "ts-node scripts/import-messages.ts && ts-node scripts/import-encounters.ts && ts-node scripts/import-names.ts"
   },
   "repository": {
     "type": "git",

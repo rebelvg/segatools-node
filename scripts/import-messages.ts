@@ -1,13 +1,13 @@
-const _ = require('lodash');
-const { MongoClient } = require('mongodb');
-const { ObjectID } = require('mongodb');
+import * as _ from 'lodash';
+import { MongoClient, ObjectID } from 'mongodb';
 
-const Message = require('../models/message');
+import { Message } from '../models/message';
 
 const mongoUrl = 'mongodb://localhost';
 const dbName = 'segatools';
 
-const importedMessagesData = require('./import/messages-encounters.json');
+const importedMessagesData = require('./import/messages.json');
+const importedSpeakersData = require('./import/speakers.json');
 
 (async () => {
   const mongoClient = await MongoClient.connect(
@@ -22,19 +22,21 @@ const importedMessagesData = require('./import/messages-encounters.json');
   const importPromises = _.map(importedMessagesData, message => {
     const lines = [];
 
+    const speakerIds = _.find<any>(importedSpeakersData, { FileName: message.Filename }).NameIDs;
+
     _.forEach(message.Japanese, (japaneseLine, index) => {
       lines.push({
         text: {
           japanese: japaneseLine || null,
           english: message.English[index] || null
         },
-        speakerId: japaneseLine ? 113 : null
+        speakerId: speakerIds[index]
       });
     });
 
     const messageModel = new Message({
       fileName: message.Filename,
-      chapterName: 'Random Encounters',
+      chapterName: message.chapter,
       lines,
       timeUpdated: new Date(message.timestamp * 1000)
     });
