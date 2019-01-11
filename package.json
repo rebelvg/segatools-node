@@ -33,6 +33,8 @@
   "devDependencies": {
     "eslint": "^5.9.0",
     "husky": "^1.2.0",
-    "prettier": "^1.15.2"
+    "prettier": "^1.15.2",
+    "ts-node": "^7.0.1",
+    "typescript": "^3.2.2"
   }
 }
