@@ -21,7 +21,7 @@ export class Name {
     this.timeUpdated = timeUpdated;
   }
 
-  public update({ english }: { english: string }) {
+  public update({ english }: { english: string }): void {
     this.english = english;
     this.timeUpdated = new Date();
   }
