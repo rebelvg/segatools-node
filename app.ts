@@ -6,6 +6,7 @@ import * as koaQs from 'koa-qs';
 import { router as messages } from './routes/messages';
 import { router as names } from './routes/names';
 import { router as lines } from './routes/lines';
+import { router as users } from './routes/users';
 
 export const app = new Koa();
 
@@ -26,9 +27,10 @@ app.use(async (ctx, next) => {
 
 const router = new Router();
 
-router.use('/api/messages', messages.routes());
-router.use('/api/names', names.routes());
-router.use('/api/lines', lines.routes());
+router.use('/messages', messages.routes());
+router.use('/names', names.routes());
+router.use('/lines', lines.routes());
+router.use('/users', users.routes());
 
 app.use(router.routes());
 
