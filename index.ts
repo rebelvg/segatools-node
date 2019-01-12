@@ -2,6 +2,16 @@ import { app } from './app';
 import { getMongoClient } from './mongo';
 import './passport';
 
+import { IUser } from './models/user';
+
+declare module 'koa' {
+  interface Context {
+    state: {
+      user: IUser;
+    };
+  }
+}
+
 import { config } from './config';
 
 process.on('unhandledRejection', (reason, p) => {

@@ -60,6 +60,10 @@ export class User {
     this.updatedAt = this.createdAt;
   }
 
+  public static findOne(query): Promise<IUser> {
+    return usersCollection().findOne(query);
+  }
+
   public static findById(id: string): Promise<IUser> {
     return usersCollection().findOne({
       _id: new ObjectID(id)

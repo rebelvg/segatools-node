@@ -1,5 +1,7 @@
 import * as Router from 'koa-router';
 
+import { isEditor } from '../middlewares/is-editor';
+
 import { findValidation } from '../controllers/messages/validation/find';
 import { updateValidation } from '../controllers/messages/validation/update';
 
@@ -11,4 +13,4 @@ export const router = new Router();
 
 router.get('/:id', findById);
 router.get('/', findValidation, find);
-router.post('/:id', updateValidation, update);
+router.post('/:id', isEditor, updateValidation, update);
