@@ -1,14 +1,13 @@
-const _ = require('lodash');
-const Message = require('../../models/message');
+import * as _ from 'lodash';
+import { Context } from 'koa';
 
-async function replace(ctx) {
+import { Message } from '../../models/message';
+import { messagesCollection } from '../../mongo';
+
+export async function replace(ctx: Context) {
   const { request } = ctx;
 
-  const { mongoClient } = ctx;
-
   const { find, replace } = request.body;
-
-  const collection = mongoClient.collection('messages');
 
   const updateResult = {
     messagesUpdated: 0
@@ -18,7 +17,7 @@ async function replace(ctx) {
     'lines.text.english': new RegExp(_.escapeRegExp(find))
   };
 
-  const allMessages = await collection.find(findQuery).toArray();
+  const allMessages = await Message.findAll(findQuery);
 
   const updateOperations = [];
 
@@ -30,7 +29,7 @@ async function replace(ctx) {
       replace
     });
 
-    const updatePromise = collection.updateOne(
+    const updatePromise = messagesCollection().updateOne(
       { _id: messageRecord._id },
       {
         $set: {
@@ -48,5 +47,3 @@ async function replace(ctx) {
 
   ctx.body = updateResult;
 }
-
-module.exports = replace;

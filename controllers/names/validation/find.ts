@@ -1,11 +1,11 @@
-const Joi = require('joi');
+import * as Joi from 'joi';
 
 const schema = Joi.object({
   search: Joi.string(),
   hideCompleted: Joi.bool().default(false)
 }).required();
 
-function findValidation(ctx, next) {
+export function findValidation(ctx, next) {
   const { error, value } = Joi.validate(ctx.query, schema, {
     abortEarly: false
   });
@@ -18,5 +18,3 @@ function findValidation(ctx, next) {
 
   throw error;
 }
-
-module.exports = findValidation;

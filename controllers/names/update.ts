@@ -1,21 +1,16 @@
-const { ObjectID } = require('mongodb');
+import { Context } from 'koa';
 
-const Name = require('../../models/name');
+import { Name } from '../../models/name';
+import { namesCollection } from '../../mongo';
 
-async function update(ctx, next) {
+export async function update(ctx: Context, next) {
   const { request } = ctx;
-
-  const { mongoClient } = ctx;
 
   const { id: nameId } = ctx.params;
 
   const { english } = request.body;
 
-  const nameCollection = mongoClient.collection('names');
-
-  const nameRecord = await nameCollection.findOne({
-    _id: new ObjectID(nameId)
-  });
+  const nameRecord = await Name.findOne(nameId);
 
   if (!nameRecord) {
     throw new Error('Name not found.');
@@ -27,7 +22,7 @@ async function update(ctx, next) {
     english
   });
 
-  await nameCollection.updateOne(
+  await namesCollection().updateOne(
     { _id: nameRecord._id },
     {
       $set: {
@@ -42,5 +37,3 @@ async function update(ctx, next) {
 
   ctx.body = updateResult;
 }
-
-module.exports = update;

@@ -1,20 +1,15 @@
-const { ObjectID } = require('mongodb');
+import { Context } from 'koa';
 
-const Message = require('../../models/message');
+import { Message } from '../../models/message';
+import { messagesCollection } from '../../mongo';
 
-async function update(ctx, next) {
+export async function update(ctx: Context, next) {
   const { request } = ctx;
-
-  const { mongoClient } = ctx;
 
   const messageId = ctx.params.id;
   const { chapterName, updatedLines = [], updateMany = true } = request.body;
 
-  const collection = mongoClient.collection('messages');
-
-  const messageRecord = await collection.findOne({
-    _id: new ObjectID(messageId)
-  });
+  const messageRecord = await Message.findOne(messageId);
 
   if (!messageRecord) {
     throw new Error('Message not found.');
@@ -26,7 +21,7 @@ async function update(ctx, next) {
     chapterName
   });
 
-  await collection.updateOne(
+  await messagesCollection().updateOne(
     { _id: messageRecord._id },
     {
       $set: {
@@ -49,7 +44,7 @@ async function update(ctx, next) {
         }
       };
 
-  const allMessages = await collection.find(findQuery).toArray();
+  const allMessages = await Message.findAll(findQuery);
 
   const updateOperations = [];
 
@@ -60,7 +55,7 @@ async function update(ctx, next) {
       updatedLines
     });
 
-    const updatePromise = collection.updateOne(
+    const updatePromise = messagesCollection().updateOne(
       { _id: messageRecord._id },
       {
         $set: {
@@ -78,5 +73,3 @@ async function update(ctx, next) {
 
   ctx.body = updateResult;
 }
-
-module.exports = update;

@@ -1,10 +1,9 @@
-const _ = require('lodash');
-const { MongoClient } = require('mongodb');
-const { ObjectID } = require('mongodb');
+import * as _ from 'lodash';
+import { MongoClient, ObjectID } from 'mongodb';
 
-const Message = require('../models/message');
+import { Message } from '../models/message';
 
-const mongoUrl = 'mongodb://localhost';
+const mongoUrl = 'mongodb://localhost/';
 const dbName = 'segatools';
 
 const importedMessagesData = require('./import/messages.json');
@@ -23,7 +22,7 @@ const importedSpeakersData = require('./import/speakers.json');
   const importPromises = _.map(importedMessagesData, message => {
     const lines = [];
 
-    const speakerIds = _.find(importedSpeakersData, { FileName: message.Filename }).NameIDs;
+    const speakerIds = _.find<any>(importedSpeakersData, { FileName: message.Filename }).NameIDs;
 
     _.forEach(message.Japanese, (japaneseLine, index) => {
       lines.push({

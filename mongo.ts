@@ -1,0 +1,27 @@
+import { MongoClient, Db } from 'mongodb';
+
+import { IMessage } from './models/message';
+import { IName } from './models/name';
+
+let mongoClientDb: Db;
+
+export async function getMongoClient(): Promise<void> {
+  return new Promise(resolve => {
+    MongoClient.connect(
+      'mongodb://localhost/',
+      { useNewUrlParser: true },
+      (err, client) => {
+        if (err) {
+          throw err;
+        }
+
+        mongoClientDb = client.db('segatools');
+
+        return resolve();
+      }
+    );
+  });
+}
+
+export const messagesCollection = () => mongoClientDb.collection<IMessage>('messages');
+export const namesCollection = () => mongoClientDb.collection<IName>('names');

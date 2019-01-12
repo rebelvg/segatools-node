@@ -1,9 +1,11 @@
-const _ = require('lodash');
-const { inspect } = require('util');
+import * as _ from 'lodash';
+import { inspect } from 'util';
+import { Context } from 'koa';
 
-async function find(ctx, next) {
-  const { mongoClient } = ctx;
+import { namesCollection, messagesCollection } from '../../mongo';
+import { Name } from '../../models/name';
 
+export async function find(ctx: Context, next) {
   const {
     page = 1,
     limit = 20,
@@ -22,10 +24,7 @@ async function find(ctx, next) {
     hideNotCompleted = false
   } = ctx.state.query;
 
-  const messagesCollection = mongoClient.collection('messages');
-  const namesCollection = mongoClient.collection('names');
-
-  let query = { $and: [] };
+  let query: any = { $and: [] };
 
   if (search.length > 0) {
     const searchRegexp = new RegExp(
@@ -89,7 +88,7 @@ async function find(ctx, next) {
   if (names.length > 0) {
     await Promise.all(
       names.map(async name => {
-        const nameIdsToFind = await namesCollection.distinct('nameId', {
+        const nameIdsToFind = await namesCollection().distinct('nameId', {
           $or: [
             {
               japanese: new RegExp(_.escapeRegExp(name), 'i')
@@ -110,7 +109,7 @@ async function find(ctx, next) {
   if (namesStrict.length > 0) {
     await Promise.all(
       namesStrict.map(async name => {
-        const nameIdsToFind = await namesCollection.distinct('nameId', {
+        const nameIdsToFind = await namesCollection().distinct('nameId', {
           $or: [
             {
               japanese: name
@@ -150,7 +149,7 @@ async function find(ctx, next) {
 
   console.log(inspect(query, { showHidden: false, depth: null }));
 
-  const messageRecords = await messagesCollection
+  const messageRecords = await messagesCollection()
     .find(query)
     .sort({
       [sortBy]: sortOrder
@@ -159,7 +158,7 @@ async function find(ctx, next) {
     .limit(limit)
     .toArray();
 
-  const nameRecords = await namesCollection.find().toArray();
+  const nameRecords = await Name.findAll();
 
   const messages = messageRecords.map(file => {
     return {
@@ -170,7 +169,7 @@ async function find(ctx, next) {
     };
   });
 
-  const count = await messagesCollection.countDocuments(query);
+  const count = (await messagesCollection().countDocuments(query)) as any;
 
   const info = {
     page,
@@ -181,5 +180,3 @@ async function find(ctx, next) {
 
   ctx.body = { messages, ...info };
 }
-
-module.exports = find;

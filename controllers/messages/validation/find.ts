@@ -1,4 +1,4 @@
-const Joi = require('joi');
+import * as Joi from 'joi';
 
 const schema = Joi.object({
   page: Joi.number().default(1),
@@ -31,7 +31,7 @@ const schema = Joi.object({
   hideNotCompleted: Joi.bool().default(false)
 }).required();
 
-function findValidation(ctx, next) {
+export function findValidation(ctx, next) {
   const { error, value } = Joi.validate(ctx.query, schema, {
     abortEarly: false
   });
@@ -44,5 +44,3 @@ function findValidation(ctx, next) {
 
   throw error;
 }
-
-module.exports = findValidation;

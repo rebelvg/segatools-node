@@ -1,23 +1,19 @@
-const _ = require('lodash');
-const { ObjectID } = require('mongodb');
+import * as _ from 'lodash';
+import { Context } from 'koa';
 
-async function findById(ctx, next) {
-  const { mongoClient } = ctx;
+import { messagesCollection, namesCollection } from '../../mongo';
+import { Message } from '../../models/message';
 
+export async function findById(ctx: Context, next) {
   const messageId = ctx.params.id;
 
-  const messagesCollection = mongoClient.collection('messages');
-  const namesCollection = mongoClient.collection('names');
-
-  const messageRecord = await messagesCollection.findOne({
-    _id: new ObjectID(messageId)
-  });
+  const messageRecord = await Message.findOne(messageId);
 
   if (!messageRecord) {
     throw new Error('Message not found.');
   }
 
-  const prevMessageRecord = (await messagesCollection
+  const prevMessageRecord = (await messagesCollection()
     .find({
       _id: { $lt: messageRecord._id },
       chapterName: messageRecord.chapterName
@@ -26,7 +22,7 @@ async function findById(ctx, next) {
     .limit(1)
     .toArray())[0];
 
-  const nextMessageRecord = (await messagesCollection
+  const nextMessageRecord = (await messagesCollection()
     .find({
       _id: { $gt: messageRecord._id },
       chapterName: messageRecord.chapterName
@@ -35,7 +31,7 @@ async function findById(ctx, next) {
     .limit(1)
     .toArray())[0];
 
-  const nameRecords = await namesCollection
+  const nameRecords = await namesCollection()
     .find({
       nameId: {
         $in: messageRecord.nameIds
@@ -54,5 +50,3 @@ async function findById(ctx, next) {
 
   ctx.body = result;
 }
-
-module.exports = findById;
