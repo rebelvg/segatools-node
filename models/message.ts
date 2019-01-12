@@ -1,5 +1,7 @@
 import * as _ from 'lodash';
-import { ObjectID } from 'mongodb';
+import { ObjectID, FilterQuery } from 'mongodb';
+
+import { messagesCollection } from '../mongo';
 
 export interface IMessage {
   _id: ObjectID;
@@ -46,6 +48,18 @@ export class Message {
     this.nameIds = this.getNameIds(lines);
     this.percentDone = this.getPercent(lines);
     this.timeUpdated = timeUpdated;
+  }
+
+  public static findAll(query: FilterQuery<IMessage> = {}): Promise<IMessage[]> {
+    return messagesCollection()
+      .find(query)
+      .toArray();
+  }
+
+  public static findOne(id: string): Promise<IMessage> {
+    return messagesCollection().findOne({
+      _id: new ObjectID(id)
+    });
   }
 
   public update({ chapterName, updatedLines }: { chapterName?: string; updatedLines?: ITextLine[] }): void {

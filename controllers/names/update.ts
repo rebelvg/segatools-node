@@ -1,4 +1,3 @@
-import { ObjectID } from 'mongodb';
 import { Context } from 'koa';
 
 import { Name } from '../../models/name';
@@ -11,9 +10,7 @@ export async function update(ctx: Context, next) {
 
   const { english } = request.body;
 
-  const nameRecord = await namesCollection().findOne({
-    _id: new ObjectID(nameId)
-  });
+  const nameRecord = await Name.findOne(nameId);
 
   if (!nameRecord) {
     throw new Error('Name not found.');

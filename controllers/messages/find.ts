@@ -3,6 +3,7 @@ import { inspect } from 'util';
 import { Context } from 'koa';
 
 import { namesCollection, messagesCollection } from '../../mongo';
+import { Name } from '../../models/name';
 
 export async function find(ctx: Context, next) {
   const {
@@ -157,9 +158,7 @@ export async function find(ctx: Context, next) {
     .limit(limit)
     .toArray();
 
-  const nameRecords = await namesCollection()
-    .find()
-    .toArray();
+  const nameRecords = await Name.findAll();
 
   const messages = messageRecords.map(file => {
     return {

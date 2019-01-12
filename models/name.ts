@@ -1,4 +1,6 @@
-import { ObjectID } from 'mongodb';
+import { ObjectID, FilterQuery } from 'mongodb';
+
+import { namesCollection } from '../mongo';
 
 export interface IName {
   _id: ObjectID;
@@ -29,6 +31,18 @@ export class Name {
     this.japanese = japanese;
     this.english = english;
     this.timeUpdated = timeUpdated;
+  }
+
+  public static findAll(query: FilterQuery<IName> = {}): Promise<IName[]> {
+    return namesCollection()
+      .find(query)
+      .toArray();
+  }
+
+  public static findOne(id: string): Promise<IName> {
+    return namesCollection().findOne({
+      _id: new ObjectID(id)
+    });
   }
 
   public update({ english }: { english: string }): void {

@@ -1,15 +1,13 @@
 import * as _ from 'lodash';
-import { ObjectID } from 'mongodb';
 import { Context } from 'koa';
 
 import { messagesCollection, namesCollection } from '../../mongo';
+import { Message } from '../../models/message';
 
 export async function findById(ctx: Context, next) {
   const messageId = ctx.params.id;
 
-  const messageRecord = await messagesCollection().findOne({
-    _id: new ObjectID(messageId)
-  });
+  const messageRecord = await Message.findOne(messageId);
 
   if (!messageRecord) {
     throw new Error('Message not found.');

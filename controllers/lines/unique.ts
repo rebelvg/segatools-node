@@ -1,12 +1,10 @@
 import * as _ from 'lodash';
 import { Context } from 'koa';
 
-import { messagesCollection } from '../../mongo';
+import { Message } from '../../models/message';
 
 export async function unique(ctx: Context, next) {
-  const allMessages = await messagesCollection()
-    .find()
-    .toArray();
+  const allMessages = await Message.findAll();
 
   const allLines = [];
 

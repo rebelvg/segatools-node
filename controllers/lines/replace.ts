@@ -17,9 +17,7 @@ export async function replace(ctx: Context) {
     'lines.text.english': new RegExp(_.escapeRegExp(find))
   };
 
-  const allMessages = await messagesCollection()
-    .find(findQuery)
-    .toArray();
+  const allMessages = await Message.findAll(findQuery);
 
   const updateOperations = [];
 

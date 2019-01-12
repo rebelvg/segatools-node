@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import { inspect } from 'util';
 import { Context } from 'koa';
 
-import { namesCollection } from '../../mongo';
+import { Name } from '../../models/name';
 
 export async function find(ctx: Context, next) {
   const { search, hideCompleted = false } = ctx.state.query;
@@ -27,9 +27,7 @@ export async function find(ctx: Context, next) {
 
   console.log(inspect(query, { showHidden: false, depth: null }));
 
-  const result = await namesCollection()
-    .find(query)
-    .toArray();
+  const result = await Name.findAll(query);
 
   ctx.body = { names: result };
 }

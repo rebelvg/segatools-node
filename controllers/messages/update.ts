@@ -1,4 +1,3 @@
-import { ObjectID } from 'mongodb';
 import { Context } from 'koa';
 
 import { Message } from '../../models/message';
@@ -10,9 +9,7 @@ export async function update(ctx: Context, next) {
   const messageId = ctx.params.id;
   const { chapterName, updatedLines = [], updateMany = true } = request.body;
 
-  const messageRecord = await messagesCollection().findOne({
-    _id: new ObjectID(messageId)
-  });
+  const messageRecord = await Message.findOne(messageId);
 
   if (!messageRecord) {
     throw new Error('Message not found.');
@@ -47,9 +44,7 @@ export async function update(ctx: Context, next) {
         }
       };
 
-  const allMessages = await messagesCollection()
-    .find(findQuery)
-    .toArray();
+  const allMessages = await Message.findAll(findQuery);
 
   const updateOperations = [];
 
