@@ -3,7 +3,7 @@ import { MongoClient, Db } from 'mongodb';
 import { IMessage } from './models/message';
 import { IName } from './models/name';
 
-let mongoClient: Db;
+let mongoClientDb: Db;
 
 export async function getMongoClient(): Promise<void> {
   return new Promise(resolve => {
@@ -15,7 +15,7 @@ export async function getMongoClient(): Promise<void> {
           throw err;
         }
 
-        mongoClient = client.db('segatools');
+        mongoClientDb = client.db('segatools');
 
         return resolve();
       }
@@ -23,5 +23,5 @@ export async function getMongoClient(): Promise<void> {
   });
 }
 
-export const messagesCollection = () => mongoClient.collection<IMessage>('messages');
-export const namesCollection = () => mongoClient.collection<IName>('names');
+export const messagesCollection = () => mongoClientDb.collection<IMessage>('messages');
+export const namesCollection = () => mongoClientDb.collection<IName>('names');
