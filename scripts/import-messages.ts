@@ -3,7 +3,7 @@ import { MongoClient, ObjectID } from 'mongodb';
 
 import { Message } from '../models/message';
 
-const mongoUrl = 'mongodb://localhost';
+const mongoUrl = 'mongodb://localhost/';
 const dbName = 'segatools';
 
 const importedMessagesData = require('./import/messages.json');

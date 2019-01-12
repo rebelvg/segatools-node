@@ -1,16 +1,13 @@
 import * as _ from 'lodash';
 import { ObjectID } from 'mongodb';
-import { AppContext, IMessage, IName } from '../../common/app';
+import { Context } from 'koa';
 
-export async function findById(ctx: AppContext, next) {
-  const { mongoClient } = ctx;
+import { messagesCollection, namesCollection } from '../../mongo';
 
+export async function findById(ctx: Context, next) {
   const messageId = ctx.params.id;
 
-  const messagesCollection = mongoClient.collection<IMessage>('messages');
-  const namesCollection = mongoClient.collection<IName>('names');
-
-  const messageRecord = await messagesCollection.findOne({
+  const messageRecord = await messagesCollection().findOne({
     _id: new ObjectID(messageId)
   });
 
@@ -18,7 +15,7 @@ export async function findById(ctx: AppContext, next) {
     throw new Error('Message not found.');
   }
 
-  const prevMessageRecord = (await messagesCollection
+  const prevMessageRecord = (await messagesCollection()
     .find({
       _id: { $lt: messageRecord._id },
       chapterName: messageRecord.chapterName
@@ -27,7 +24,7 @@ export async function findById(ctx: AppContext, next) {
     .limit(1)
     .toArray())[0];
 
-  const nextMessageRecord = (await messagesCollection
+  const nextMessageRecord = (await messagesCollection()
     .find({
       _id: { $gt: messageRecord._id },
       chapterName: messageRecord.chapterName
@@ -36,7 +33,7 @@ export async function findById(ctx: AppContext, next) {
     .limit(1)
     .toArray())[0];
 
-  const nameRecords = await namesCollection
+  const nameRecords = await namesCollection()
     .find({
       nameId: {
         $in: messageRecord.nameIds

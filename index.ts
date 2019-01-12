@@ -6,9 +6,7 @@ process.on('unhandledRejection', (reason, p) => {
 });
 
 (async () => {
-  const mongoClient = await getMongoClient();
-
-  app.context.mongoClient = mongoClient;
+  await getMongoClient();
 
   app.listen(3000, () => {
     console.log('server is running.');

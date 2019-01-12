@@ -1,13 +1,12 @@
 import * as _ from 'lodash';
+import { Context } from 'koa';
 
-import { AppContext, IMessage } from '../../common/app';
+import { messagesCollection } from '../../mongo';
 
-export async function unique(ctx: AppContext, next) {
-  const { mongoClient } = ctx;
-
-  const messageCollection = mongoClient.collection<IMessage>('messages');
-
-  const allMessages = await messageCollection.find().toArray();
+export async function unique(ctx: Context, next) {
+  const allMessages = await messagesCollection()
+    .find()
+    .toArray();
 
   const allLines = [];
 

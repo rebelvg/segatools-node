@@ -1,6 +1,11 @@
 import { MongoClient, Db } from 'mongodb';
 
-export async function getMongoClient(): Promise<Db> {
+import { IMessage } from './models/message';
+import { IName } from './models/name';
+
+let mongoClient: Db;
+
+export async function getMongoClient(): Promise<void> {
   return new Promise(resolve => {
     MongoClient.connect(
       'mongodb://localhost/',
@@ -10,8 +15,13 @@ export async function getMongoClient(): Promise<Db> {
           throw err;
         }
 
-        return resolve(client.db('segatools'));
+        mongoClient = client.db('segatools');
+
+        return resolve();
       }
     );
   });
 }
+
+export const messagesCollection = () => mongoClient.collection<IMessage>('messages');
+export const namesCollection = () => mongoClient.collection<IName>('names');

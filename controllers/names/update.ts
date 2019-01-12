@@ -1,20 +1,17 @@
 import { ObjectID } from 'mongodb';
+import { Context } from 'koa';
 
 import { Name } from '../../models/name';
-import { AppContext, IName } from '../../common/app';
+import { namesCollection } from '../../mongo';
 
-export async function update(ctx: AppContext, next) {
+export async function update(ctx: Context, next) {
   const { request } = ctx;
-
-  const { mongoClient } = ctx;
 
   const { id: nameId } = ctx.params;
 
   const { english } = request.body;
 
-  const nameCollection = mongoClient.collection<IName>('names');
-
-  const nameRecord = await nameCollection.findOne({
+  const nameRecord = await namesCollection().findOne({
     _id: new ObjectID(nameId)
   });
 
@@ -28,7 +25,7 @@ export async function update(ctx: AppContext, next) {
     english
   });
 
-  await nameCollection.updateOne(
+  await namesCollection().updateOne(
     { _id: nameRecord._id },
     {
       $set: {

@@ -1,11 +1,10 @@
 import * as _ from 'lodash';
 import { inspect } from 'util';
+import { Context } from 'koa';
 
-import { AppContext, IMessage, IName } from '../../common/app';
+import { namesCollection, messagesCollection } from '../../mongo';
 
-export async function find(ctx: AppContext, next) {
-  const { mongoClient } = ctx;
-
+export async function find(ctx: Context, next) {
   const {
     page = 1,
     limit = 20,
@@ -23,9 +22,6 @@ export async function find(ctx: AppContext, next) {
     hideCompleted = false,
     hideNotCompleted = false
   } = ctx.state.query;
-
-  const messagesCollection = mongoClient.collection<IMessage>('messages');
-  const namesCollection = mongoClient.collection<IName>('names');
 
   let query: any = { $and: [] };
 
@@ -91,7 +87,7 @@ export async function find(ctx: AppContext, next) {
   if (names.length > 0) {
     await Promise.all(
       names.map(async name => {
-        const nameIdsToFind = await namesCollection.distinct('nameId', {
+        const nameIdsToFind = await namesCollection().distinct('nameId', {
           $or: [
             {
               japanese: new RegExp(_.escapeRegExp(name), 'i')
@@ -112,7 +108,7 @@ export async function find(ctx: AppContext, next) {
   if (namesStrict.length > 0) {
     await Promise.all(
       namesStrict.map(async name => {
-        const nameIdsToFind = await namesCollection.distinct('nameId', {
+        const nameIdsToFind = await namesCollection().distinct('nameId', {
           $or: [
             {
               japanese: name
@@ -152,7 +148,7 @@ export async function find(ctx: AppContext, next) {
 
   console.log(inspect(query, { showHidden: false, depth: null }));
 
-  const messageRecords = await messagesCollection
+  const messageRecords = await messagesCollection()
     .find(query)
     .sort({
       [sortBy]: sortOrder
@@ -161,7 +157,9 @@ export async function find(ctx: AppContext, next) {
     .limit(limit)
     .toArray();
 
-  const nameRecords = await namesCollection.find().toArray();
+  const nameRecords = await namesCollection()
+    .find()
+    .toArray();
 
   const messages = messageRecords.map(file => {
     return {
@@ -172,7 +170,7 @@ export async function find(ctx: AppContext, next) {
     };
   });
 
-  const count = (await messagesCollection.countDocuments(query)) as any;
+  const count = (await messagesCollection().countDocuments(query)) as any;
 
   const info = {
     page,

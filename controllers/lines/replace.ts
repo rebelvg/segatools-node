@@ -1,14 +1,13 @@
 import * as _ from 'lodash';
+import { Context } from 'koa';
 
-import { Message, ILine } from '../../models/message';
-import { AppContext, IMessage } from '../../common/app';
+import { Message } from '../../models/message';
+import { messagesCollection } from '../../mongo';
 
-export async function replace(ctx: AppContext) {
-  const { request, mongoClient } = ctx;
+export async function replace(ctx: Context) {
+  const { request } = ctx;
 
   const { find, replace } = request.body;
-
-  const collection = mongoClient.collection<IMessage>('messages');
 
   const updateResult = {
     messagesUpdated: 0
@@ -18,7 +17,9 @@ export async function replace(ctx: AppContext) {
     'lines.text.english': new RegExp(_.escapeRegExp(find))
   };
 
-  const allMessages = await collection.find(findQuery).toArray();
+  const allMessages = await messagesCollection()
+    .find(findQuery)
+    .toArray();
 
   const updateOperations = [];
 
@@ -30,7 +31,7 @@ export async function replace(ctx: AppContext) {
       replace
     });
 
-    const updatePromise = collection.updateOne(
+    const updatePromise = messagesCollection().updateOne(
       { _id: messageRecord._id },
       {
         $set: {

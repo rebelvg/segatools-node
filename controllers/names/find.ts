@@ -1,13 +1,11 @@
 import * as _ from 'lodash';
 import { inspect } from 'util';
-import { AppContext, IName } from '../../common/app';
+import { Context } from 'koa';
 
-export async function find(ctx: AppContext, next) {
-  const { mongoClient } = ctx;
+import { namesCollection } from '../../mongo';
 
+export async function find(ctx: Context, next) {
   const { search, hideCompleted = false } = ctx.state.query;
-
-  const namesCollection = mongoClient.collection<IName>('names');
 
   let query: any = { $and: [] };
 
@@ -29,7 +27,9 @@ export async function find(ctx: AppContext, next) {
 
   console.log(inspect(query, { showHidden: false, depth: null }));
 
-  const result = await namesCollection.find(query).toArray();
+  const result = await namesCollection()
+    .find(query)
+    .toArray();
 
   ctx.body = { names: result };
 }

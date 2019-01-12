@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import { MongoClient, ObjectID } from 'mongodb';
 
-const mongoUrl = 'mongodb://localhost';
+const mongoUrl = 'mongodb://localhost/';
 const dbName = 'segatools';
 
 const importedNamesData = require('./import/names.json');

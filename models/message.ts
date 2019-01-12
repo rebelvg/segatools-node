@@ -1,13 +1,24 @@
 import * as _ from 'lodash';
+import { ObjectID } from 'mongodb';
 
-export interface ITextLine {
-  japanese: string;
-  english: string;
+export interface IMessage {
+  _id: ObjectID;
+  fileName: string;
+  chapterName: string;
+  lines: ILine[];
+  nameIds: number[];
+  percentDone: number;
+  timeUpdated: Date;
 }
 
 export interface ILine {
   text: ITextLine;
   speakerId: number;
+}
+
+export interface ITextLine {
+  japanese: string;
+  english: string;
 }
 
 export class Message {

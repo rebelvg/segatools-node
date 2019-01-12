@@ -1,19 +1,16 @@
 import { ObjectID } from 'mongodb';
+import { Context } from 'koa';
 
 import { Message } from '../../models/message';
-import { AppContext, IMessage } from '../../common/app';
+import { messagesCollection } from '../../mongo';
 
-export async function update(ctx: AppContext, next) {
+export async function update(ctx: Context, next) {
   const { request } = ctx;
-
-  const { mongoClient } = ctx;
 
   const messageId = ctx.params.id;
   const { chapterName, updatedLines = [], updateMany = true } = request.body;
 
-  const collection = mongoClient.collection<IMessage>('messages');
-
-  const messageRecord = await collection.findOne({
+  const messageRecord = await messagesCollection().findOne({
     _id: new ObjectID(messageId)
   });
 
@@ -27,7 +24,7 @@ export async function update(ctx: AppContext, next) {
     chapterName
   });
 
-  await collection.updateOne(
+  await messagesCollection().updateOne(
     { _id: messageRecord._id },
     {
       $set: {
@@ -50,7 +47,9 @@ export async function update(ctx: AppContext, next) {
         }
       };
 
-  const allMessages = await collection.find(findQuery).toArray();
+  const allMessages = await messagesCollection()
+    .find(findQuery)
+    .toArray();
 
   const updateOperations = [];
 
@@ -61,7 +60,7 @@ export async function update(ctx: AppContext, next) {
       updatedLines
     });
 
-    const updatePromise = collection.updateOne(
+    const updatePromise = messagesCollection().updateOne(
       { _id: messageRecord._id },
       {
         $set: {

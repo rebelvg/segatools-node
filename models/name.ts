@@ -1,3 +1,13 @@
+import { ObjectID } from 'mongodb';
+
+export interface IName {
+  _id: ObjectID;
+  nameId: number;
+  japanese: string;
+  english: string;
+  timeUpdated: Date;
+}
+
 export class Name {
   public nameId: number;
   public japanese: string;
