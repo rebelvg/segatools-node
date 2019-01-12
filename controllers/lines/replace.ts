@@ -1,11 +1,10 @@
 import * as _ from 'lodash';
 
 import { Message } from '../../models/message';
+import { AppContext } from '../../common/app';
 
-export async function replace(ctx) {
-  const { request } = ctx;
-
-  const { mongoClient } = ctx;
+export async function replace(ctx: AppContext) {
+  const { request, mongoClient } = ctx;
 
   const { find, replace } = request.body;
 

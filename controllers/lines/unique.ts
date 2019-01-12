@@ -1,6 +1,8 @@
 import * as _ from 'lodash';
 
-export async function unique(ctx, next) {
+import { AppContext } from '../../common/app';
+
+export async function unique(ctx: AppContext, next) {
   const { mongoClient } = ctx;
 
   const messageCollection = mongoClient.collection('messages');

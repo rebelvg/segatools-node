@@ -1,7 +1,8 @@
 import * as _ from 'lodash';
 import { ObjectID } from 'mongodb';
+import { AppContext } from '../../common/app';
 
-export async function findById(ctx, next) {
+export async function findById(ctx: AppContext, next) {
   const { mongoClient } = ctx;
 
   const messageId = ctx.params.id;

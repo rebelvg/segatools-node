@@ -1,8 +1,9 @@
 import { ObjectID } from 'mongodb';
 
 import { Message } from '../../models/message';
+import { AppContext } from '../../common/app';
 
-export async function update(ctx, next) {
+export async function update(ctx: AppContext, next) {
   const { request } = ctx;
 
   const { mongoClient } = ctx;

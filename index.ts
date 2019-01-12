@@ -1,5 +1,4 @@
 import { app } from './app';
-
 import { getMongoClient } from './mongo';
 
 process.on('unhandledRejection', (reason, p) => {

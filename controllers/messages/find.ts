@@ -1,7 +1,9 @@
 import * as _ from 'lodash';
 import { inspect } from 'util';
 
-export async function find(ctx, next) {
+import { AppContext } from '../../common/app';
+
+export async function find(ctx: AppContext, next) {
   const { mongoClient } = ctx;
 
   const {
@@ -170,7 +172,7 @@ export async function find(ctx, next) {
     };
   });
 
-  const count = await messagesCollection.countDocuments(query);
+  const count = (await messagesCollection.countDocuments(query)) as any;
 
   const info = {
     page,

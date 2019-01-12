@@ -1,7 +1,8 @@
 import * as _ from 'lodash';
 import { inspect } from 'util';
+import { AppContext } from '../../common/app';
 
-export async function find(ctx, next) {
+export async function find(ctx: AppContext, next) {
   const { mongoClient } = ctx;
 
   const { search, hideCompleted = false } = ctx.state.query;
