@@ -1,13 +1,13 @@
 import * as _ from 'lodash';
 import { inspect } from 'util';
-import { AppContext } from '../../common/app';
+import { AppContext, IName } from '../../common/app';
 
 export async function find(ctx: AppContext, next) {
   const { mongoClient } = ctx;
 
   const { search, hideCompleted = false } = ctx.state.query;
 
-  const namesCollection = mongoClient.collection('names');
+  const namesCollection = mongoClient.collection<IName>('names');
 
   let query: any = { $and: [] };
 

@@ -1,14 +1,14 @@
 import * as _ from 'lodash';
 
-import { Message } from '../../models/message';
-import { AppContext } from '../../common/app';
+import { Message, ILine } from '../../models/message';
+import { AppContext, IMessage } from '../../common/app';
 
 export async function replace(ctx: AppContext) {
   const { request, mongoClient } = ctx;
 
   const { find, replace } = request.body;
 
-  const collection = mongoClient.collection('messages');
+  const collection = mongoClient.collection<IMessage>('messages');
 
   const updateResult = {
     messagesUpdated: 0

@@ -1,14 +1,14 @@
 import * as _ from 'lodash';
 import { ObjectID } from 'mongodb';
-import { AppContext } from '../../common/app';
+import { AppContext, IMessage, IName } from '../../common/app';
 
 export async function findById(ctx: AppContext, next) {
   const { mongoClient } = ctx;
 
   const messageId = ctx.params.id;
 
-  const messagesCollection = mongoClient.collection('messages');
-  const namesCollection = mongoClient.collection('names');
+  const messagesCollection = mongoClient.collection<IMessage>('messages');
+  const namesCollection = mongoClient.collection<IName>('names');
 
   const messageRecord = await messagesCollection.findOne({
     _id: new ObjectID(messageId)

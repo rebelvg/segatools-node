@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import { inspect } from 'util';
 
-import { AppContext } from '../../common/app';
+import { AppContext, IMessage, IName } from '../../common/app';
 
 export async function find(ctx: AppContext, next) {
   const { mongoClient } = ctx;
@@ -24,8 +24,8 @@ export async function find(ctx: AppContext, next) {
     hideNotCompleted = false
   } = ctx.state.query;
 
-  const messagesCollection = mongoClient.collection('messages');
-  const namesCollection = mongoClient.collection('names');
+  const messagesCollection = mongoClient.collection<IMessage>('messages');
+  const namesCollection = mongoClient.collection<IName>('names');
 
   let query: any = { $and: [] };
 

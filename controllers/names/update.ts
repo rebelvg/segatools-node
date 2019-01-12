@@ -1,7 +1,7 @@
 import { ObjectID } from 'mongodb';
 
 import { Name } from '../../models/name';
-import { AppContext } from '../../common/app';
+import { AppContext, IName } from '../../common/app';
 
 export async function update(ctx: AppContext, next) {
   const { request } = ctx;
@@ -12,7 +12,7 @@ export async function update(ctx: AppContext, next) {
 
   const { english } = request.body;
 
-  const nameCollection = mongoClient.collection('names');
+  const nameCollection = mongoClient.collection<IName>('names');
 
   const nameRecord = await nameCollection.findOne({
     _id: new ObjectID(nameId)

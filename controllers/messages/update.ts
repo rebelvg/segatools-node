@@ -1,7 +1,7 @@
 import { ObjectID } from 'mongodb';
 
 import { Message } from '../../models/message';
-import { AppContext } from '../../common/app';
+import { AppContext, IMessage } from '../../common/app';
 
 export async function update(ctx: AppContext, next) {
   const { request } = ctx;
@@ -11,7 +11,7 @@ export async function update(ctx: AppContext, next) {
   const messageId = ctx.params.id;
   const { chapterName, updatedLines = [], updateMany = true } = request.body;
 
-  const collection = mongoClient.collection('messages');
+  const collection = mongoClient.collection<IMessage>('messages');
 
   const messageRecord = await collection.findOne({
     _id: new ObjectID(messageId)

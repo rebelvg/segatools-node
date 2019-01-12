@@ -1,11 +1,11 @@
 import * as _ from 'lodash';
 
-interface ITextLine {
+export interface ITextLine {
   japanese: string;
   english: string;
 }
 
-interface ILine {
+export interface ILine {
   text: ITextLine;
   speakerId: number;
 }

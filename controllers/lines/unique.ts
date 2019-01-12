@@ -1,11 +1,11 @@
 import * as _ from 'lodash';
 
-import { AppContext } from '../../common/app';
+import { AppContext, IMessage } from '../../common/app';
 
 export async function unique(ctx: AppContext, next) {
   const { mongoClient } = ctx;
 
-  const messageCollection = mongoClient.collection('messages');
+  const messageCollection = mongoClient.collection<IMessage>('messages');
 
   const allMessages = await messageCollection.find().toArray();
 
