@@ -2,7 +2,15 @@ import * as Router from 'koa-router';
 import * as passport from 'koa-passport';
 import { Context } from 'koa';
 
+import { isLoggedIn } from '../middlewares/is-logged-in';
+
 export const router = new Router();
+
+router.get('/', isLoggedIn, (ctx: Context, next) => {
+  const { user } = ctx.state;
+
+  ctx.body = { user };
+});
 
 router.get(
   '/auth/google',
