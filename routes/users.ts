@@ -25,10 +25,19 @@ router.get(
   })
 );
 
-router.get('/auth/google/callback', passport.authenticate('google', { session: false }), (ctx: Context, next) => {
-  const { user } = ctx.state;
+router.get(
+  '/auth/google/callback',
+  async (ctx: Context, next) => {
+    (ctx.request as any).koaCtx = ctx;
 
-  ctx.body = {
-    token: user.token
-  };
-});
+    await next();
+  },
+  passport.authenticate('google', { session: false }),
+  (ctx: Context, next) => {
+    const { user } = ctx.state;
+
+    ctx.body = {
+      token: user.token
+    };
+  }
+);
