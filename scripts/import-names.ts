@@ -31,7 +31,7 @@ const importedNamesData = require('./import/names.json');
 
   await Promise.all(importPromises);
 
-  console.log('import done.');
+  console.log('names import done.');
 
   await mongoClient.close();
 })();
