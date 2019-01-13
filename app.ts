@@ -10,6 +10,7 @@ import { router as names } from './routes/names';
 import { router as lines } from './routes/lines';
 import { router as users } from './routes/users';
 import { router as stats } from './routes/stats';
+import { router as admin } from './routes/admin';
 
 export const app = new Koa();
 
@@ -36,6 +37,7 @@ router.use('/names', names.routes());
 router.use('/lines', lines.routes());
 router.use('/users', users.routes());
 router.use('/stats', stats.routes());
+router.use('/admin', admin.routes());
 
 app.use(router.routes());
 
