@@ -17,6 +17,8 @@ passport.use(
       passReqToCallback: true
     },
     async (req, accessToken, refreshToken, profile, done) => {
+      const { koaCtx } = req as any;
+
       try {
         const user = await User.findByGoogleId(profile.id);
 
@@ -27,7 +29,7 @@ passport.use(
               $set: {
                 emails: profile.emails,
                 name: profile.displayName,
-                ipUpdated: req.ip,
+                ipUpdated: koaCtx.ip,
                 updatedAt: new Date()
               }
             }
@@ -40,7 +42,7 @@ passport.use(
           emails: profile.emails,
           googleId: profile.id,
           name: profile.displayName,
-          ipCreated: req.ip
+          ipCreated: koaCtx.ip
         });
 
         await usersCollection().insertOne(newUser);
