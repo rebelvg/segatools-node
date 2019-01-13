@@ -53,8 +53,8 @@ const importedSpeakersData: ISpeakerImport[] = require('./import/speakers.json')
     _.forEach(message.Japanese, (japaneseLine, index) => {
       let count = 0;
 
-      _.forEach(importedMessagesData, message => {
-        _.forEach(message.Japanese, countJapaneseLine => {
+      _.forEach(importedMessagesData, messageCount => {
+        _.forEach(messageCount.Japanese, countJapaneseLine => {
           if (countJapaneseLine === japaneseLine) {
             count++;
           }
