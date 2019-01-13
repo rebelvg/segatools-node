@@ -13,7 +13,7 @@ passport.use(
     {
       clientID: web.client_id,
       clientSecret: web.client_secret,
-      callbackURL: `${config.googleCallbackHost}/users/auth/google/callback`,
+      callbackURL: `${config.server.googleCallbackHost}/users/auth/google/callback`,
       passReqToCallback: true
     },
     async (req, accessToken, refreshToken, profile, done) => {
