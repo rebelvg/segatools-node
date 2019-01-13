@@ -39,7 +39,7 @@ export async function findById(ctx: Context, next) {
     })
     .toArray();
 
-  const result = {
+  ctx.body = {
     ...messageRecord,
     names: messageRecord.nameIds.map(nameId => {
       return _.find(nameRecords, { nameId }) || null;
@@ -47,6 +47,4 @@ export async function findById(ctx: Context, next) {
     prevMessageId: _.get(prevMessageRecord, '_id', null),
     nextMessageId: _.get(nextMessageRecord, '_id', null)
   };
-
-  ctx.body = result;
 }

@@ -31,9 +31,5 @@ export async function update(ctx: Context, next) {
     }
   );
 
-  const updateResult = {
-    nameUpdated: nameRecord.nameId
-  };
-
-  ctx.body = updateResult;
+  ctx.body = { name: await Name.findOne(nameId) };
 }
