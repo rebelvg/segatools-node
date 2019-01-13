@@ -7,8 +7,7 @@ const schema = Joi.object({
       japanese: Joi.string().required(),
       english: Joi.string().required()
     })
-    .min(1)
-    .required(),
+    .min(1),
   updateMany: Joi.boolean().required()
 }).required();
 
