@@ -8,6 +8,7 @@ declare module 'koa' {
   interface Context {
     state: {
       user: IUser;
+      [key: string]: any;
     };
   }
 }
