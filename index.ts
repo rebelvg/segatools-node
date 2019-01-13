@@ -4,6 +4,7 @@ import './passport';
 
 import { IUser } from './models/user';
 
+/* tslint:disable:interface-name */
 declare module 'koa' {
   interface Context {
     state: {

@@ -5,6 +5,7 @@ import { config } from '../config';
 import { User } from '../models/user';
 import { usersCollection } from '../mongo';
 
+/* tslint:disable:no-var-requires */
 const { web } = require('../google-keys');
 
 passport.use(

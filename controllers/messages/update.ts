@@ -30,10 +30,6 @@ export async function update(ctx: Context, next) {
     }
   );
 
-  const updateResult = {
-    messagesUpdated: 0
-  };
-
   const findQuery = !updateMany
     ? {
         _id: messageRecord._id
@@ -69,7 +65,5 @@ export async function update(ctx: Context, next) {
 
   await Promise.all(updateOperations);
 
-  updateResult.messagesUpdated = updateOperations.length;
-
-  ctx.body = updateResult;
+  ctx.body = { messagesUpdated: updateOperations.length };
 }

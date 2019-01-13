@@ -31,6 +31,7 @@ interface ISpeakerImport {
   NameIDs: number[];
 }
 
+/* tslint:disable:no-var-requires */
 const importedMessagesData: IMessagesImport = require('./import/messages.json');
 const importedSpeakersData: ISpeakerImport[] = require('./import/speakers.json');
 
@@ -54,7 +55,9 @@ const importedSpeakersData: ISpeakerImport[] = require('./import/speakers.json')
 
       _.forEach(importedMessagesData, message => {
         _.forEach(message.Japanese, countJapaneseLine => {
-          if (countJapaneseLine === japaneseLine) count++;
+          if (countJapaneseLine === japaneseLine) {
+            count++;
+          }
         });
       });
 
