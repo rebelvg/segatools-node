@@ -4,6 +4,7 @@ import { MongoClient, ObjectID } from 'mongodb';
 const mongoUrl = 'mongodb://localhost/';
 const dbName = 'segatools';
 
+/* tslint:disable:no-var-requires */
 const importedNamesData = require('./import/names.json');
 
 (async () => {

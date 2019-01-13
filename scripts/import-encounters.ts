@@ -24,6 +24,7 @@ interface IMessagesImport {
   [id: string]: IMessageImport;
 }
 
+/* tslint:disable:no-var-requires */
 const importedMessagesData: IMessagesImport = require('./import/messages-encounters.json');
 
 (async () => {
@@ -44,7 +45,9 @@ const importedMessagesData: IMessagesImport = require('./import/messages-encount
 
       _.forEach(importedMessagesData, message => {
         _.forEach(message.Japanese, countJapaneseLine => {
-          if (countJapaneseLine === japaneseLine) count++;
+          if (countJapaneseLine === japaneseLine) {
+            count++;
+          }
         });
       });
 
