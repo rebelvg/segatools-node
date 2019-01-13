@@ -63,6 +63,9 @@ export class User {
   public static findAll(query: FilterQuery<IUser> = {}): Promise<IUser[]> {
     return usersCollection()
       .find(query)
+      .sort({
+        createdAt: -1
+      })
       .toArray();
   }
 
