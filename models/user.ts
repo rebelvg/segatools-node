@@ -1,4 +1,4 @@
-import { ObjectID } from 'mongodb';
+import { ObjectID, FilterQuery } from 'mongodb';
 import * as uuid from 'uuid/v4';
 
 import { usersCollection } from '../mongo';
@@ -58,6 +58,15 @@ export class User {
     this.ipUpdated = this.ipCreated;
     this.createdAt = new Date();
     this.updatedAt = this.createdAt;
+  }
+
+  public static findAll(query: FilterQuery<IUser> = {}): Promise<IUser[]> {
+    return usersCollection()
+      .find(query)
+      .sort({
+        createdAt: -1
+      })
+      .toArray();
   }
 
   public static findOne(query): Promise<IUser> {
