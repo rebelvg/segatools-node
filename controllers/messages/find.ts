@@ -147,8 +147,6 @@ export async function find(ctx: Context, next) {
     query = {};
   }
 
-  console.log(inspect(query, { showHidden: false, depth: null }));
-
   const messageRecords = await messagesCollection()
     .find(query)
     .sort({

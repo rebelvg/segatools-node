@@ -25,8 +25,6 @@ export async function find(ctx: Context, next) {
     query = {};
   }
 
-  console.log(inspect(query, { showHidden: false, depth: null }));
-
   const names = await Name.findAll(query);
 
   ctx.body = {
