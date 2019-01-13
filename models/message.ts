@@ -57,7 +57,7 @@ export class Message {
       .toArray();
   }
 
-  public static findOne(id: string): Promise<IMessage> {
+  public static findById(id: string): Promise<IMessage> {
     return messagesCollection().findOne({
       _id: new ObjectID(id)
     });

@@ -7,14 +7,10 @@ import { messagesCollection } from '../../mongo';
 export async function replace(ctx: Context) {
   const { request } = ctx;
 
-  const { find, replace } = request.body;
-
-  const updateResult = {
-    messagesUpdated: 0
-  };
+  const { find: findString, replace: replaceString } = request.body;
 
   const findQuery = {
-    'lines.text.english': new RegExp(_.escapeRegExp(find))
+    'lines.text.english': new RegExp(_.escapeRegExp(findString))
   };
 
   const allMessages = await Message.findAll(findQuery);
@@ -25,8 +21,8 @@ export async function replace(ctx: Context) {
     const messageModel = new Message(messageRecord);
 
     messageModel.replace({
-      find,
-      replace
+      find: findString,
+      replace: replaceString
     });
 
     const updatePromise = messagesCollection().updateOne(
@@ -43,7 +39,7 @@ export async function replace(ctx: Context) {
 
   await Promise.all(updateOperations);
 
-  updateResult.messagesUpdated = updateOperations.length;
-
-  ctx.body = updateResult;
+  ctx.body = {
+    messagesUpdated: updateOperations.length
+  };
 }

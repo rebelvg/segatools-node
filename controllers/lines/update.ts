@@ -8,10 +8,6 @@ export async function update(ctx: Context, next) {
 
   const { updatedLines = [] } = request.body;
 
-  const updateResult = {
-    messagesUpdated: 0
-  };
-
   const findQuery = {
     'lines.text.japanese': {
       $in: updatedLines.map(updateLine => updateLine.japanese)
@@ -43,7 +39,7 @@ export async function update(ctx: Context, next) {
 
   await Promise.all(updateOperations);
 
-  updateResult.messagesUpdated = updateOperations.length;
-
-  ctx.body = updateResult;
+  ctx.body = {
+    messagesUpdated: updateOperations.length
+  };
 }

@@ -30,7 +30,7 @@ export async function find(ctx: Context, next) {
     const searchRegexp = new RegExp(
       `${search
         .map(_.escapeRegExp)
-        .map(search => `(?=.*${search})`)
+        .map(searchString => `(?=.*${searchString})`)
         .join('')}.+`
     );
 
@@ -178,5 +178,8 @@ export async function find(ctx: Context, next) {
     total: count
   };
 
-  ctx.body = { messages, ...info };
+  ctx.body = {
+    messages,
+    ...info
+  };
 }

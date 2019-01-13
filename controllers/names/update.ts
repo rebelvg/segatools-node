@@ -4,13 +4,14 @@ import { Name } from '../../models/name';
 import { namesCollection } from '../../mongo';
 
 export async function update(ctx: Context, next) {
-  const { request } = ctx;
-
-  const { id: nameId } = ctx.params;
+  const {
+    params: { id: nameId },
+    request
+  } = ctx;
 
   const { english } = request.body;
 
-  const nameRecord = await Name.findOne(nameId);
+  const nameRecord = await Name.findById(nameId);
 
   if (!nameRecord) {
     throw new Error('Name not found.');
@@ -31,9 +32,7 @@ export async function update(ctx: Context, next) {
     }
   );
 
-  const updateResult = {
-    nameUpdated: nameRecord.nameId
+  ctx.body = {
+    name: await Name.findById(nameId)
   };
-
-  ctx.body = updateResult;
 }

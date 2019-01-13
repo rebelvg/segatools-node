@@ -33,5 +33,8 @@ export async function unique(ctx: Context, next) {
 
   const lines = _.slice(sortedLines.reverse(), (page - 1) * limit, page * limit).map(line => _.omit(line, 'speakerId'));
 
-  ctx.body = { lines, ...info };
+  ctx.body = {
+    lines,
+    ...info
+  };
 }
