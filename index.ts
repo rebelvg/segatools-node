@@ -23,7 +23,7 @@ process.on('unhandledRejection', (reason, p) => {
 (async () => {
   await getMongoClient();
 
-  app.listen(config.port, () => {
+  app.listen(config.port, config.host, () => {
     console.log('server is running...');
   });
 })();

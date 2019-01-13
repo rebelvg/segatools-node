@@ -1,5 +1,6 @@
 import { MongoClient, Db } from 'mongodb';
 
+import { config } from './config';
 import { IMessage } from './models/message';
 import { IName } from './models/name';
 import { IUser } from './models/user';
@@ -16,7 +17,7 @@ export async function getMongoClient(): Promise<void> {
           throw err;
         }
 
-        mongoClientDb = client.db('segatools');
+        mongoClientDb = client.db(config.db.name);
 
         return resolve();
       }

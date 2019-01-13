@@ -1,8 +1,10 @@
 import * as _ from 'lodash';
 import { MongoClient, ObjectID } from 'mongodb';
 
+import { config } from '../config';
+
 const mongoUrl = 'mongodb://localhost/';
-const dbName = 'segatools';
+const dbName = config.db.name;
 
 /* tslint:disable:no-var-requires */
 const importedNamesData = require('./import/names.json');
