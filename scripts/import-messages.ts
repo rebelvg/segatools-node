@@ -1,10 +1,11 @@
 import * as _ from 'lodash';
 import { MongoClient, ObjectID } from 'mongodb';
 
+import { config } from '../config';
 import { Message, ILine, IMessage } from '../models/message';
 
 const mongoUrl = 'mongodb://localhost/';
-const dbName = 'segatools';
+const dbName = config.db.name;
 
 interface IMessageImport {
   _id: {
