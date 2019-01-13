@@ -16,6 +16,7 @@ export interface IMessage {
 export interface ILine {
   text: ITextLine;
   speakerId: number;
+  count: number;
 }
 
 export interface ITextLine {
