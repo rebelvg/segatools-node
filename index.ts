@@ -1,5 +1,19 @@
 import { app } from './app';
 import { getMongoClient } from './mongo';
+import './passport';
+
+import { IUser } from './models/user';
+
+declare module 'koa' {
+  interface Context {
+    state: {
+      user: IUser;
+      [key: string]: any;
+    };
+  }
+}
+
+import { config } from './config';
 
 process.on('unhandledRejection', (reason, p) => {
   throw reason;
@@ -8,7 +22,7 @@ process.on('unhandledRejection', (reason, p) => {
 (async () => {
   await getMongoClient();
 
-  app.listen(3000, () => {
-    console.log('server is running.');
+  app.listen(config.port, () => {
+    console.log('server is running...');
   });
 })();

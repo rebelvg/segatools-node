@@ -1,12 +1,30 @@
 import * as _ from 'lodash';
 import { MongoClient, ObjectID } from 'mongodb';
 
-import { Message } from '../models/message';
+import { Message, IMessage, ILine } from '../models/message';
 
 const mongoUrl = 'mongodb://localhost/';
 const dbName = 'segatools';
 
-const importedMessagesData = require('./import/messages-encounters.json');
+interface IMessageImport {
+  _id: {
+    $id: string;
+  };
+  Filename: string;
+  Japanese: string[];
+  English: string[];
+  nameIDs: number[];
+  timestamp: number;
+  log: {
+    [key: string]: string;
+  };
+}
+
+interface IMessagesImport {
+  [id: string]: IMessageImport;
+}
+
+const importedMessagesData: IMessagesImport = require('./import/messages-encounters.json');
 
 (async () => {
   const mongoClient = await MongoClient.connect(
@@ -16,24 +34,33 @@ const importedMessagesData = require('./import/messages-encounters.json');
 
   const db = mongoClient.db(dbName);
 
-  const messagesCollection = db.collection('messages');
+  const messagesCollection = db.collection<IMessage>('messages');
 
   const importPromises = _.map(importedMessagesData, message => {
-    const lines = [];
+    const lines: ILine[] = [];
 
     _.forEach(message.Japanese, (japaneseLine, index) => {
+      let count = 0;
+
+      _.forEach(importedMessagesData, message => {
+        _.forEach(message.Japanese, countJapaneseLine => {
+          if (countJapaneseLine === japaneseLine) count++;
+        });
+      });
+
       lines.push({
         text: {
           japanese: japaneseLine || null,
           english: message.English[index] || null
         },
-        speakerId: japaneseLine ? 113 : null
+        speakerId: japaneseLine ? 113 : null,
+        count
       });
     });
 
     const messageModel = new Message({
       fileName: message.Filename,
-      chapterName: 'Random Encounters',
+      chapterName: 'Random Encounter',
       lines,
       timeUpdated: new Date(message.timestamp * 1000)
     });

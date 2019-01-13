@@ -2,6 +2,7 @@ import { MongoClient, Db } from 'mongodb';
 
 import { IMessage } from './models/message';
 import { IName } from './models/name';
+import { IUser } from './models/user';
 
 let mongoClientDb: Db;
 
@@ -25,3 +26,4 @@ export async function getMongoClient(): Promise<void> {
 
 export const messagesCollection = () => mongoClientDb.collection<IMessage>('messages');
 export const namesCollection = () => mongoClientDb.collection<IName>('names');
+export const usersCollection = () => mongoClientDb.collection<IUser>('users');

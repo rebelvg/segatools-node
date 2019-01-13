@@ -1,13 +1,38 @@
 import * as _ from 'lodash';
 import { MongoClient, ObjectID } from 'mongodb';
 
-import { Message } from '../models/message';
+import { Message, ILine, IMessage } from '../models/message';
 
 const mongoUrl = 'mongodb://localhost/';
 const dbName = 'segatools';
 
-const importedMessagesData = require('./import/messages.json');
-const importedSpeakersData = require('./import/speakers.json');
+interface IMessageImport {
+  _id: {
+    $id: string;
+  };
+  Filename: string;
+  Japanese: string[];
+  English: string[];
+  nameIDs: number[];
+  chapter: string;
+  timestamp: number;
+  log: {
+    [key: string]: string;
+  };
+}
+
+interface IMessagesImport {
+  [id: string]: IMessageImport;
+}
+
+interface ISpeakerImport {
+  FileName: string;
+  Messages: string[];
+  NameIDs: number[];
+}
+
+const importedMessagesData: IMessagesImport = require('./import/messages.json');
+const importedSpeakersData: ISpeakerImport[] = require('./import/speakers.json');
 
 (async () => {
   const mongoClient = await MongoClient.connect(
@@ -17,20 +42,29 @@ const importedSpeakersData = require('./import/speakers.json');
 
   const db = mongoClient.db(dbName);
 
-  const messagesCollection = db.collection('messages');
+  const messagesCollection = db.collection<IMessage>('messages');
 
   const importPromises = _.map(importedMessagesData, message => {
-    const lines = [];
+    const lines: ILine[] = [];
 
-    const speakerIds = _.find<any>(importedSpeakersData, { FileName: message.Filename }).NameIDs;
+    const speakerIds = _.find(importedSpeakersData, { FileName: message.Filename }).NameIDs;
 
     _.forEach(message.Japanese, (japaneseLine, index) => {
+      let count = 0;
+
+      _.forEach(importedMessagesData, message => {
+        _.forEach(message.Japanese, countJapaneseLine => {
+          if (countJapaneseLine === japaneseLine) count++;
+        });
+      });
+
       lines.push({
         text: {
           japanese: japaneseLine || null,
           english: message.English[index] || null
         },
-        speakerId: speakerIds[index]
+        speakerId: speakerIds[index],
+        count
       });
     });
 
