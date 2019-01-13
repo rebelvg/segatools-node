@@ -39,7 +39,7 @@ export class Name {
       .toArray();
   }
 
-  public static findOne(id: string): Promise<IName> {
+  public static findById(id: string): Promise<IName> {
     return namesCollection().findOne({
       _id: new ObjectID(id)
     });

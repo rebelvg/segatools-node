@@ -39,5 +39,7 @@ export async function replace(ctx: Context) {
 
   await Promise.all(updateOperations);
 
-  ctx.body = { messagesUpdated: updateOperations.length };
+  ctx.body = {
+    messagesUpdated: updateOperations.length
+  };
 }

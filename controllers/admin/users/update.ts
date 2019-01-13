@@ -4,9 +4,10 @@ import { User } from '../../../models/user';
 import { usersCollection } from '../../../mongo';
 
 export async function update(ctx: Context) {
-  const { params, request } = ctx;
-
-  const { id } = params;
+  const {
+    params: { id },
+    request
+  } = ctx;
 
   const { personas } = request.body;
 

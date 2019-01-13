@@ -4,12 +4,14 @@ import { Message } from '../../models/message';
 import { messagesCollection } from '../../mongo';
 
 export async function update(ctx: Context, next) {
-  const { request } = ctx;
+  const {
+    params: { id: messageId },
+    request
+  } = ctx;
 
-  const messageId = ctx.params.id;
   const { chapterName, updatedLines = [], updateMany = true } = request.body;
 
-  const messageRecordById = await Message.findOne(messageId);
+  const messageRecordById = await Message.findById(messageId);
 
   if (!messageRecordById) {
     throw new Error('Message not found.');
@@ -65,5 +67,7 @@ export async function update(ctx: Context, next) {
 
   await Promise.all(updateOperations);
 
-  ctx.body = { messagesUpdated: updateOperations.length };
+  ctx.body = {
+    messagesUpdated: updateOperations.length
+  };
 }

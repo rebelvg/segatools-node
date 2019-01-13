@@ -29,5 +29,7 @@ export async function find(ctx: Context, next) {
 
   const names = await Name.findAll(query);
 
-  ctx.body = { names };
+  ctx.body = {
+    names
+  };
 }

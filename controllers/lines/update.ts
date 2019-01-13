@@ -39,5 +39,7 @@ export async function update(ctx: Context, next) {
 
   await Promise.all(updateOperations);
 
-  ctx.body = { messagesUpdated: updateOperations.length };
+  ctx.body = {
+    messagesUpdated: updateOperations.length
+  };
 }

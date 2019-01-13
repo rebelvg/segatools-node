@@ -178,5 +178,8 @@ export async function find(ctx: Context, next) {
     total: count
   };
 
-  ctx.body = { messages, ...info };
+  ctx.body = {
+    messages,
+    ...info
+  };
 }
