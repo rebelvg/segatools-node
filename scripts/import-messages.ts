@@ -32,9 +32,30 @@ interface ISpeakerImport {
   NameIDs: number[];
 }
 
+const allMessages: IMessageImport[] = [];
+
 /* tslint:disable:no-var-requires */
 const importedMessagesData: IMessagesImport = require('./import/messages.json');
+const importedMessagesEncountersData: IMessagesImport = require('./import/messages-encounters.json');
 const importedSpeakersData: ISpeakerImport[] = require('./import/speakers.json');
+
+_.forEach(importedMessagesData, message => {
+  allMessages.push(message);
+});
+
+_.forEach(importedMessagesEncountersData, message => {
+  importedSpeakersData.push({
+    FileName: message.Filename,
+    Messages: message.Japanese,
+    NameIDs: message.Japanese.map(line => (line ? 113 : null))
+  });
+
+  allMessages.push({
+    ...message,
+    chapter: 'Random Encounter',
+    nameIDs: [113]
+  });
+});
 
 (async () => {
   const mongoClient = await MongoClient.connect(
@@ -46,7 +67,7 @@ const importedSpeakersData: ISpeakerImport[] = require('./import/speakers.json')
 
   const messagesCollection = db.collection<IMessage>('messages');
 
-  const importPromises = _.map(importedMessagesData, message => {
+  const importPromises = _.map(allMessages, message => {
     const lines: ILine[] = [];
 
     const speakerIds = _.find(importedSpeakersData, { FileName: message.Filename }).NameIDs;
@@ -54,7 +75,7 @@ const importedSpeakersData: ISpeakerImport[] = require('./import/speakers.json')
     _.forEach(message.Japanese, (japaneseLine, index) => {
       let count = 0;
 
-      _.forEach(importedMessagesData, messageCount => {
+      _.forEach(allMessages, messageCount => {
         _.forEach(messageCount.Japanese, countJapaneseLine => {
           if (countJapaneseLine === japaneseLine) {
             count++;
@@ -87,7 +108,7 @@ const importedSpeakersData: ISpeakerImport[] = require('./import/speakers.json')
 
   await Promise.all(importPromises);
 
-  console.log('import done.');
+  console.log('messages import done.');
 
   await mongoClient.close();
 })();

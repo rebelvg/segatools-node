@@ -2,13 +2,10 @@ import * as Joi from 'joi';
 
 const schema = Joi.object({
   chapterName: Joi.string(),
-  updatedLines: Joi.array()
-    .items({
-      japanese: Joi.string().required(),
-      english: Joi.string().required()
-    })
-    .min(1)
-    .required(),
+  updatedLines: Joi.array().items({
+    japanese: Joi.string().required(),
+    english: Joi.string().required()
+  }),
   updateMany: Joi.boolean().required()
 }).required();
 

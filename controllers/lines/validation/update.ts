@@ -1,13 +1,10 @@
 import * as Joi from 'joi';
 
 const schema = Joi.object({
-  updatedLines: Joi.array()
-    .items({
-      japanese: Joi.string().required(),
-      english: Joi.string().required()
-    })
-    .min(1)
-    .required()
+  updatedLines: Joi.array().items({
+    japanese: Joi.string().required(),
+    english: Joi.string().required()
+  })
 }).required();
 
 export function updateValidation(ctx, next) {
