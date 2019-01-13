@@ -19,6 +19,8 @@ koaQs(app);
 app.use(bodyParser());
 app.use(readToken);
 
+app.proxy = true;
+
 app.use(async (ctx, next) => {
   try {
     await next();
