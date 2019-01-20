@@ -1,7 +1,7 @@
 {
   "name": "segatools-node",
   "version": "1.0.0",
-  "description": "",
+  "description": "Segatools Node",
   "main": "index.ts",
   "scripts": {
     "prepush": "yarn run lint",
