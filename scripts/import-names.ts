@@ -19,6 +19,8 @@ const importedNamesData = require('./import/names.json');
 
   const namesCollection = db.collection('names');
 
+  await namesCollection.drop();
+
   const importPromises = _.map(importedNamesData, name => {
     return namesCollection.insertOne({
       nameId: name.nameID,

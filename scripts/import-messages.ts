@@ -67,6 +67,8 @@ _.forEach(importedMessagesEncountersData, message => {
 
   const messagesCollection = db.collection<IMessage>('messages');
 
+  await messagesCollection.drop();
+
   const importPromises = _.map(allMessages, message => {
     const lines: ILine[] = [];
 
