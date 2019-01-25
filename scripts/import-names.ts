@@ -1,28 +1,20 @@
 import * as _ from 'lodash';
-import { MongoClient, ObjectID } from 'mongodb';
+import { ObjectID } from 'mongodb';
 
-import { config } from '../config';
-
-const mongoUrl = 'mongodb://localhost/';
-const dbName = config.db.name;
+import { namesCollection } from '../mongo';
 
 /* tslint:disable:no-var-requires */
 const importedNamesData = require('./import/names.json');
 
-(async () => {
-  const mongoClient = await MongoClient.connect(
-    mongoUrl,
-    { useNewUrlParser: true }
-  );
-
-  const db = mongoClient.db(dbName);
-
-  const namesCollection = db.collection('names');
-
-  await namesCollection.drop();
+export async function importNames() {
+  try {
+    await namesCollection().drop();
+  } catch (error) {
+    console.log('names collection does not exist.', error.message);
+  }
 
   const importPromises = _.map(importedNamesData, name => {
-    return namesCollection.insertOne({
+    return namesCollection().insertOne({
       nameId: name.nameID,
       japanese: name.Japanese,
       english: name.English,
@@ -34,6 +26,4 @@ const importedNamesData = require('./import/names.json');
   await Promise.all(importPromises);
 
   console.log('names import done.');
-
-  await mongoClient.close();
-})();
+}

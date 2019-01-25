@@ -8,7 +8,7 @@
     "lint": "tslint \"**/*.ts\" --format verbose && prettier --list-different \"**/*.{ts,js,json,css,md}\"",
     "lint:fix": "tslint \"**/*.ts\" --format verbose --fix && prettier --write \"**/*.{ts,js,json,css,md}\"",
     "start": "ts-node .",
-    "import-data": "ts-node scripts/import-messages.ts && ts-node scripts/import-names.ts"
+    "migrate": "ts-node migrate.ts"
   },
   "repository": {
     "type": "git",
