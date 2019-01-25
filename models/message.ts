@@ -31,6 +31,7 @@ export class Message {
   public lines: ILine[];
   public nameIds: number[];
   public percentDone: number;
+  public proofRead: boolean = false;
   public timeUpdated: Date;
 
   constructor({
