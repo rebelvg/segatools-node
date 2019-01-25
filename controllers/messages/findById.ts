@@ -27,7 +27,7 @@ export async function findById(ctx: Context, next) {
       _id: { $gt: messageRecord._id },
       chapterName: messageRecord.chapterName
     })
-    .sort({ _id: -1 })
+    .sort({ _id: 1 })
     .limit(1)
     .toArray())[0];
 
