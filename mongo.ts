@@ -7,7 +7,7 @@ import { IUser } from './models/user';
 
 let mongoClientDb: Db;
 
-export async function getMongoClient(): Promise<void> {
+export async function getMongoClient(): Promise<MongoClient> {
   return new Promise(resolve => {
     MongoClient.connect(
       'mongodb://localhost/',
@@ -19,12 +19,18 @@ export async function getMongoClient(): Promise<void> {
 
         mongoClientDb = client.db(config.db.name);
 
-        return resolve();
+        return resolve(client);
       }
     );
   });
 }
 
+interface IMigration {
+  name: string;
+  timeCreated: Date;
+}
+
 export const messagesCollection = () => mongoClientDb.collection<IMessage>('messages');
 export const namesCollection = () => mongoClientDb.collection<IName>('names');
 export const usersCollection = () => mongoClientDb.collection<IUser>('users');
+export const migrationsCollection = () => mongoClientDb.collection<IMigration>('migrations');

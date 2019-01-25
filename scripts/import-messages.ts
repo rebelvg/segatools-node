@@ -1,11 +1,8 @@
 import * as _ from 'lodash';
-import { MongoClient, ObjectID } from 'mongodb';
+import { ObjectID } from 'mongodb';
 
-import { config } from '../config';
-import { Message, ILine, IMessage } from '../models/message';
-
-const mongoUrl = 'mongodb://localhost/';
-const dbName = config.db.name;
+import { Message, ILine } from '../models/message';
+import { messagesCollection } from '../mongo';
 
 interface IMessageImport {
   _id: {
@@ -57,15 +54,12 @@ _.forEach(importedMessagesEncountersData, message => {
   });
 });
 
-(async () => {
-  const mongoClient = await MongoClient.connect(
-    mongoUrl,
-    { useNewUrlParser: true }
-  );
-
-  const db = mongoClient.db(dbName);
-
-  const messagesCollection = db.collection<IMessage>('messages');
+export async function importMessages() {
+  try {
+    await messagesCollection().drop();
+  } catch (error) {
+    console.log('messages collection does not exist.', error.message);
+  }
 
   const importPromises = _.map(allMessages, message => {
     const lines: ILine[] = [];
@@ -100,7 +94,7 @@ _.forEach(importedMessagesEncountersData, message => {
       timeUpdated: new Date(message.timestamp * 1000)
     });
 
-    return messagesCollection.insertOne({
+    return messagesCollection().insertOne({
       ...messageModel,
       _id: new ObjectID(message._id['$id'])
     });
@@ -109,6 +103,4 @@ _.forEach(importedMessagesEncountersData, message => {
   await Promise.all(importPromises);
 
   console.log('messages import done.');
-
-  await mongoClient.close();
-})();
+}
