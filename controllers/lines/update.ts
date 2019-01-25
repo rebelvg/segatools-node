@@ -1,16 +1,20 @@
 import { Context } from 'koa';
 
-import { Message } from '../../models/message';
+import { Message, IMessage } from '../../models/message';
 import { messagesCollection } from '../../mongo';
+import { FilterQuery } from 'mongodb';
 
 export async function update(ctx: Context, next) {
   const { request } = ctx;
 
   const { updatedLines = [] } = request.body;
 
-  const findQuery = {
+  const findQuery: FilterQuery<IMessage> = {
     'lines.text.japanese': {
       $in: updatedLines.map(updateLine => updateLine.japanese)
+    },
+    proofRead: {
+      $ne: true
     }
   };
 

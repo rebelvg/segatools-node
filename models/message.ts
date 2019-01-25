@@ -10,6 +10,7 @@ export interface IMessage {
   lines: ILine[];
   nameIds: number[];
   percentDone: number;
+  proofRead: boolean;
   timeUpdated: Date;
 }
 

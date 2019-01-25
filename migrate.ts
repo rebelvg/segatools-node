@@ -22,6 +22,8 @@ async function migrate() {
       name: fileName,
       timeCreated: new Date()
     });
+
+    console.log(`${fileName} migration done.`);
   }
 
   await mongoClient.close();

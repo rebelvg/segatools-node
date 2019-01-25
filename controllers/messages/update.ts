@@ -1,7 +1,8 @@
 import { Context } from 'koa';
 
-import { Message } from '../../models/message';
+import { Message, IMessage } from '../../models/message';
 import { messagesCollection } from '../../mongo';
+import { FilterQuery } from 'mongodb';
 
 export async function update(ctx: Context, next) {
   const {
@@ -32,13 +33,16 @@ export async function update(ctx: Context, next) {
     }
   );
 
-  const findQuery = !updateMany
+  const findQuery: FilterQuery<IMessage> = !updateMany
     ? {
         _id: messageRecordById._id
       }
     : {
         'lines.text.japanese': {
           $in: updatedLines.map(updateLine => updateLine.japanese)
+        },
+        proofRead: {
+          $ne: true
         }
       };
 
