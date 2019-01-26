@@ -10,7 +10,7 @@ export async function update(ctx: Context, next) {
     request
   } = ctx;
 
-  const { chapterName, updatedLines = [], updateMany = true } = request.body;
+  const { chapterName, updatedLines = [], proofRead, updateMany = true } = request.body;
 
   const messageRecordById = await Message.findById(messageId);
 
@@ -18,10 +18,19 @@ export async function update(ctx: Context, next) {
     throw new Error('Message not found.');
   }
 
+  if (chapterName) {
+    const chapters: string[] = await messagesCollection().distinct('chapterName', {});
+
+    if (!chapters.includes(chapterName)) {
+      throw new Error('Bad chapter name.');
+    }
+  }
+
   const messageModelById = new Message(messageRecordById);
 
   messageModelById.update({
-    chapterName
+    chapterName,
+    proofRead
   });
 
   await messagesCollection().updateOne(

@@ -65,7 +65,15 @@ export class Message {
     });
   }
 
-  public update({ chapterName, updatedLines }: { chapterName?: string; updatedLines?: ITextLine[] }): void {
+  public update({
+    chapterName,
+    updatedLines,
+    proofRead
+  }: {
+    chapterName?: string;
+    updatedLines?: ITextLine[];
+    proofRead?: boolean;
+  }): void {
     this.chapterName = chapterName || this.chapterName;
 
     _.forEach(this.lines, line => {
@@ -78,6 +86,7 @@ export class Message {
       });
     });
 
+    this.proofRead = proofRead === undefined ? proofRead : this.proofRead;
     this.percentDone = this.getPercent(this.lines);
     this.timeUpdated = new Date();
   }
