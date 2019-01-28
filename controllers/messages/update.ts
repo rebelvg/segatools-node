@@ -49,7 +49,10 @@ export async function update(ctx: Context, next) {
     : {
         $or: [
           {
-            _id: messageRecordById._id
+            _id: messageRecordById._id,
+            'lines.text.japanese': {
+              $in: updatedLines.map(updateLine => updateLine.japanese)
+            }
           },
           {
             'lines.text.japanese': {
