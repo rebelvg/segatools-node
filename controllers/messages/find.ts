@@ -163,8 +163,6 @@ export async function find(ctx: Context, next) {
 
   const count = (await messagesCollection().countDocuments(query)) as any;
 
-  const chapters = await messagesCollection().distinct('chapterName', {});
-
   const info = {
     page,
     pages: _.ceil(count / limit),
@@ -174,7 +172,6 @@ export async function find(ctx: Context, next) {
 
   ctx.body = {
     messages,
-    chapters,
     ...info
   };
 }
