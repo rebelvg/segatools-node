@@ -89,7 +89,7 @@ export async function importMessages() {
 
     const messageModel = new Message({
       fileName: message.Filename,
-      chapterName: message.chapter,
+      chapterName: message.chapter || 'No Chapter',
       lines,
       timeUpdated: new Date(message.timestamp * 1000)
     });
