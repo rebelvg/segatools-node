@@ -47,12 +47,19 @@ export async function update(ctx: Context, next) {
         _id: messageRecordById._id
       }
     : {
-        'lines.text.japanese': {
-          $in: updatedLines.map(updateLine => updateLine.japanese)
-        },
-        proofRead: {
-          $ne: true
-        }
+        $or: [
+          {
+            _id: messageRecordById._id
+          },
+          {
+            'lines.text.japanese': {
+              $in: updatedLines.map(updateLine => updateLine.japanese)
+            },
+            proofRead: {
+              $ne: true
+            }
+          }
+        ]
       };
 
   const allMessages = await Message.findAll(findQuery);
