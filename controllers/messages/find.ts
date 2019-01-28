@@ -1,5 +1,4 @@
 import * as _ from 'lodash';
-import { inspect } from 'util';
 import { Context } from 'koa';
 
 import { namesCollection, messagesCollection } from '../../mongo';
@@ -18,7 +17,6 @@ export async function find(ctx: Context, next) {
     speakersCount,
     names = [],
     namesStrict = [],
-    percentDone,
     hideChanged = false,
     hideCompleted = false,
     hideNotCompleted = false
@@ -125,10 +123,6 @@ export async function find(ctx: Context, next) {
         });
       })
     );
-  }
-
-  if (percentDone !== undefined) {
-    query['$and'].push({ percentDone });
   }
 
   if (hideChanged) {
