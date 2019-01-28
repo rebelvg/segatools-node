@@ -46,7 +46,7 @@ export class Message {
     timeUpdated: Date;
   }) {
     this.fileName = fileName;
-    this.chapterName = chapterName || 'No Chapter';
+    this.chapterName = chapterName;
     this.lines = lines;
     this.nameIds = this.getNameIds(lines);
     this.percentDone = this.getPercent(lines);
