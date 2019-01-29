@@ -1,4 +1,5 @@
 import { Context } from 'koa';
+import * as _ from 'lodash';
 
 import { Message, IMessage } from '../../models/message';
 import { messagesCollection } from '../../mongo';
@@ -50,37 +51,48 @@ export async function update(ctx: Context, next) {
         'lines.text.japanese': {
           $in: updatedLines.map(updateLine => updateLine.japanese)
         },
-        proofRead: {
-          $ne: true
-        }
+        $or: [
+          {
+            _id: messageRecordById._id
+          },
+          {
+            proofRead: {
+              $ne: true
+            }
+          }
+        ]
       };
 
   const allMessages = await Message.findAll(findQuery);
 
-  const updateOperations = [];
+  const updateOperations = await Promise.all(
+    allMessages.map(messageRecord => {
+      const messageModel = new Message(messageRecord);
 
-  for (const messageRecord of allMessages) {
-    const messageModel = new Message(messageRecord);
+      messageModel.update({
+        updatedLines
+      });
 
-    messageModel.update({
-      updatedLines
-    });
-
-    const updatePromise = messagesCollection().updateOne(
-      { _id: messageRecord._id },
-      {
-        $set: {
-          ...messageModel
+      return messagesCollection().updateOne(
+        { _id: messageRecord._id },
+        {
+          $set: {
+            ...messageModel
+          }
         }
-      }
-    );
+      );
+    })
+  );
 
-    updateOperations.push(updatePromise);
-  }
-
-  await Promise.all(updateOperations);
+  const messagesUpdated = _.reduce(
+    updateOperations,
+    (sum, n) => {
+      return sum + n.modifiedCount;
+    },
+    0
+  );
 
   ctx.body = {
-    messagesUpdated: updateOperations.length
+    messagesUpdated
   };
 }
