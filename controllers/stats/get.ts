@@ -4,7 +4,7 @@ import { Context } from 'koa';
 import { Message, ILine } from '../../models/message';
 import { Name } from '../../models/name';
 
-export async function show(ctx: Context) {
+export async function get(ctx: Context) {
   const allMessages = await Message.findAll();
 
   let messagesDonePercent = 0;
