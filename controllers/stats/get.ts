@@ -74,13 +74,15 @@ export async function get(ctx: Context) {
       translated: allEnglishLines.length,
       totalUnique: uniqueJapaneseLines.length,
       translatedUnique: uniqueEnglishLines.length,
-      percentDone: (allEnglishLines.length / allJapaneseLines.length) * 100
+      percentDone: (uniqueEnglishLines.length / uniqueJapaneseLines.length) * 100
     },
     names: {
       filesCount: allNames.length,
       total: allNames.length,
       translated: allEnglishNames.length,
       percentDone: (allEnglishNames.length / allNames.length) * 100
-    }
+    },
+    percentDone:
+      ((uniqueEnglishLines.length + allEnglishNames.length) / (uniqueJapaneseLines.length + allNames.length)) * 100
   };
 }
