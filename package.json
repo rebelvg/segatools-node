@@ -8,7 +8,8 @@
     "lint": "tslint \"**/*.ts\" --format verbose && prettier --list-different \"**/*.{ts,js,json,css,md}\"",
     "lint:fix": "tslint \"**/*.ts\" --format verbose --fix && prettier --write \"**/*.{ts,js,json,css,md}\"",
     "migrate": "ts-node migrate.ts",
-    "start": "ts-node ."
+    "start": "ts-node .",
+    "pm2": "yarn install && yarn run migrate && pm2 restart segatools-node"
   },
   "repository": {
     "type": "git",
