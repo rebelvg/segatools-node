@@ -2,7 +2,8 @@ import * as Joi from 'joi';
 
 const schema = Joi.object({
   search: Joi.string(),
-  hideCompleted: Joi.bool().default(false)
+  hideCompleted: Joi.bool().default(false),
+  hideNotCompleted: Joi.bool().default(false)
 }).required();
 
 export function findValidation(ctx, next) {
