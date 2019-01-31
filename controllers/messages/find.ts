@@ -6,10 +6,10 @@ import { Name } from '../../models/name';
 
 export async function find(ctx: Context, next) {
   const {
-    page = 1,
-    limit = 20,
-    sortBy = 'timeUpdated',
-    sortOrder = -1,
+    page,
+    limit,
+    sortBy,
+    sortOrder,
     search = [],
     searchStrict = [],
     chapterName,

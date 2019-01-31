@@ -33,9 +33,10 @@ export class Name {
     this.timeUpdated = timeUpdated;
   }
 
-  public static findAll(query: FilterQuery<IName> = {}): Promise<IName[]> {
+  public static findAll(query: FilterQuery<IName> = {}, sort = {}): Promise<IName[]> {
     return namesCollection()
       .find(query)
+      .sort(sort)
       .toArray();
   }
 
