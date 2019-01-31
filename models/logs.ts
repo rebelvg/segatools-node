@@ -4,7 +4,8 @@ import { ITextLine } from './message';
 export enum LogTypeEnum {
   message = 'message',
   name = 'name',
-  user = 'user'
+  user = 'user',
+  replace = 'replace'
 }
 
 interface ILogMessage {
@@ -12,7 +13,6 @@ interface ILogMessage {
   chapterName: string;
   proofRead: boolean;
   updatedLines: ITextLine[];
-  createdAt: Date;
 }
 
 interface ILogName {
@@ -25,9 +25,14 @@ interface ILogUser {
   personas: string[];
 }
 
+interface ILogReplace {
+  find: string;
+  replace: string;
+}
+
 export interface ILog {
   type: LogTypeEnum;
-  content: ILogMessage | ILogName | ILogUser;
-  user: ObjectID;
+  content: ILogMessage | ILogName | ILogUser | ILogReplace;
+  userId: ObjectID;
   createdAt: Date;
 }

@@ -31,10 +31,9 @@ export async function update(ctx: Context) {
     type: LogTypeEnum.user,
     content: {
       id,
-      personas,
-      createdAt: new Date()
+      personas
     },
-    user: user._id,
+    userId: user._id,
     createdAt: new Date()
   });
 

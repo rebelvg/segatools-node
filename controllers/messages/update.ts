@@ -88,22 +88,13 @@ export async function update(ctx: Context, next) {
       id: messageId,
       chapterName,
       proofRead,
-      updatedLines,
-      createdAt: new Date()
+      updatedLines
     },
-    user: user._id,
+    userId: user._id,
     createdAt: new Date()
   });
 
-  const messagesUpdated = _.reduce(
-    updateOperations,
-    (sum, n) => {
-      return sum + n.modifiedCount;
-    },
-    0
-  );
-
   ctx.body = {
-    messagesUpdated
+    messagesUpdated: updateOperations.length
   };
 }

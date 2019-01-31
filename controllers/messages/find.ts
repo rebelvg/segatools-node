@@ -99,7 +99,9 @@ export async function find(ctx: Context, next) {
         });
 
         query['$and'].push({
-          $or: nameIdsToFind.map(nameId => ({ nameIds: nameId }))
+          nameIds: {
+            $in: nameIdsToFind
+          }
         });
       })
     );
@@ -120,7 +122,9 @@ export async function find(ctx: Context, next) {
         });
 
         query['$and'].push({
-          $or: nameIdsToFind.map(nameId => ({ nameIds: nameId }))
+          nameIds: {
+            $in: nameIdsToFind
+          }
         });
       })
     );

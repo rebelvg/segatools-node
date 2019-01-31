@@ -40,7 +40,7 @@ export async function update(ctx: Context, next) {
       id: nameId,
       english
     },
-    user: user._id,
+    userId: user._id,
     createdAt: new Date()
   });
 
