@@ -3,7 +3,8 @@ import { ITextLine } from './message';
 
 export enum LogTypeEnum {
   message = 'message',
-  name = 'name'
+  name = 'name',
+  user = 'user'
 }
 
 interface ILogMessage {
@@ -19,9 +20,14 @@ interface ILogName {
   english: string;
 }
 
+interface ILogUser {
+  id: string;
+  personas: string[];
+}
+
 export interface ILog {
   type: LogTypeEnum;
-  content: ILogMessage | ILogName;
+  content: ILogMessage | ILogName | ILogUser;
   user: ObjectID;
   createdAt: Date;
 }

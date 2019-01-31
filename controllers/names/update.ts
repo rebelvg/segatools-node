@@ -35,7 +35,7 @@ export async function update(ctx: Context, next) {
   );
 
   await logsCollection().insertOne({
-    type: LogTypeEnum.message,
+    type: LogTypeEnum.name,
     content: {
       id: nameId,
       english
