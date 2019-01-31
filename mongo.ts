@@ -19,14 +19,6 @@ export async function getMongoClient(): Promise<MongoClient> {
 
         mongoClientDb = client.db(config.db.name);
 
-        await messagesCollection().createIndex('timeUpdated');
-
-        await namesCollection().createIndex('timeUpdated');
-
-        await usersCollection().createIndex('token', { unique: true });
-        await usersCollection().createIndex('createdAt');
-        await usersCollection().createIndex('updatedAt');
-
         return resolve(client);
       }
     );

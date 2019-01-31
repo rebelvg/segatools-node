@@ -19,7 +19,8 @@ export async function find(ctx: Context, next) {
     namesStrict = [],
     hideChanged = false,
     hideCompleted = false,
-    hideNotCompleted = false
+    hideNotCompleted = false,
+    proofRead
   } = ctx.state.query;
 
   let query: any = { $and: [] };
@@ -135,6 +136,10 @@ export async function find(ctx: Context, next) {
 
   if (hideNotCompleted) {
     query['$and'].push({ percentDone: 100 });
+  }
+
+  if (proofRead !== undefined) {
+    query['$and'].push({ proofRead });
   }
 
   if (query['$and'].length === 0) {

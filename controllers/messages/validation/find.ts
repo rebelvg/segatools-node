@@ -28,7 +28,8 @@ const schema = Joi.object({
     .default([]),
   hideChanged: Joi.bool().default(false),
   hideCompleted: Joi.bool().default(false),
-  hideNotCompleted: Joi.bool().default(false)
+  hideNotCompleted: Joi.bool().default(false),
+  proofRead: Joi.boolean()
 }).required();
 
 export function findValidation(ctx, next) {
