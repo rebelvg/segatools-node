@@ -1,7 +1,7 @@
 import * as Router from 'koa-router';
 
-import { show } from '../controllers/stats/show';
+import { get } from '../controllers/stats/get';
 
 export const router = new Router();
 
-router.get('/', show);
+router.get('/', get);

@@ -7,7 +7,7 @@ const schema = Joi.object({
     .max(200),
   sortBy: Joi.string()
     .default('timeUpdated')
-    .valid('timeUpdate', 'percentDone'),
+    .valid('fileName', 'percentDone', 'timeUpdated'),
   sortOrder: Joi.number()
     .default(-1)
     .valid(-1, 1),
@@ -28,7 +28,8 @@ const schema = Joi.object({
     .default([]),
   hideChanged: Joi.bool().default(false),
   hideCompleted: Joi.bool().default(false),
-  hideNotCompleted: Joi.bool().default(false)
+  hideNotCompleted: Joi.bool().default(false),
+  proofRead: Joi.boolean()
 }).required();
 
 export function findValidation(ctx, next) {

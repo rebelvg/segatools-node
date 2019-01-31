@@ -2,16 +2,18 @@ import { Context } from 'koa';
 import * as _ from 'lodash';
 
 import { Message, IMessage } from '../../models/message';
-import { messagesCollection } from '../../mongo';
+import { messagesCollection, logsCollection } from '../../mongo';
 import { FilterQuery } from 'mongodb';
+import { LogTypeEnum } from '../../models/logs';
 
 export async function update(ctx: Context, next) {
   const {
     params: { id: messageId },
-    request
+    request,
+    state: { user }
   } = ctx;
 
-  const { chapterName, updatedLines = [], proofRead, updateMany = true } = request.body;
+  const { chapterName, updatedLines = [], proofRead } = request.body;
 
   const messageRecordById = await Message.findById(messageId);
 
@@ -43,25 +45,21 @@ export async function update(ctx: Context, next) {
     }
   );
 
-  const findQuery: FilterQuery<IMessage> = !updateMany
-    ? {
+  const findQuery: FilterQuery<IMessage> = {
+    'lines.text.japanese': {
+      $in: updatedLines.map(updateLine => updateLine.japanese)
+    },
+    $or: [
+      {
         _id: messageRecordById._id
+      },
+      {
+        proofRead: {
+          $ne: true
+        }
       }
-    : {
-        'lines.text.japanese': {
-          $in: updatedLines.map(updateLine => updateLine.japanese)
-        },
-        $or: [
-          {
-            _id: messageRecordById._id
-          },
-          {
-            proofRead: {
-              $ne: true
-            }
-          }
-        ]
-      };
+    ]
+  };
 
   const allMessages = await Message.findAll(findQuery);
 
@@ -84,15 +82,19 @@ export async function update(ctx: Context, next) {
     })
   );
 
-  const messagesUpdated = _.reduce(
-    updateOperations,
-    (sum, n) => {
-      return sum + n.modifiedCount;
+  await logsCollection().insertOne({
+    type: LogTypeEnum.message,
+    content: {
+      id: messageId,
+      chapterName,
+      proofRead,
+      updatedLines
     },
-    0
-  );
+    userId: user._id,
+    createdAt: new Date()
+  });
 
   ctx.body = {
-    messagesUpdated
+    messagesUpdated: updateOperations.length
   };
 }

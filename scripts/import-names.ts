@@ -17,7 +17,7 @@ export async function importNames() {
     return namesCollection().insertOne({
       nameId: name.nameID,
       japanese: name.Japanese,
-      english: name.English,
+      english: name.English || '',
       timeUpdated: new Date(name.timestamp * 1000),
       _id: new ObjectID(name._id['$id'])
     });

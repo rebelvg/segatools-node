@@ -5,7 +5,7 @@ import { Context } from 'koa';
 import { Name } from '../../models/name';
 
 export async function find(ctx: Context, next) {
-  const { search, hideCompleted = false } = ctx.state.query;
+  const { sortBy, sortOrder, search, hideCompleted = false, hideNotCompleted = false } = ctx.state.query;
 
   let query: any = { $and: [] };
 
@@ -21,11 +21,21 @@ export async function find(ctx: Context, next) {
     query['$and'].push({ english: '' });
   }
 
+  if (hideNotCompleted) {
+    query['$and'].push({
+      english: {
+        $ne: ''
+      }
+    });
+  }
+
   if (query['$and'].length === 0) {
     query = {};
   }
 
-  const names = await Name.findAll(query);
+  const names = await Name.findAll(query, {
+    [sortBy]: sortOrder
+  });
 
   ctx.body = {
     names

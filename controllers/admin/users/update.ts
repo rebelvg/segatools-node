@@ -1,7 +1,8 @@
 import { Context } from 'koa';
 
 import { User } from '../../../models/user';
-import { usersCollection } from '../../../mongo';
+import { usersCollection, logsCollection } from '../../../mongo';
+import { LogTypeEnum } from '../../../models/logs';
 
 export async function update(ctx: Context) {
   const {
@@ -25,6 +26,16 @@ export async function update(ctx: Context) {
       }
     }
   );
+
+  await logsCollection().insertOne({
+    type: LogTypeEnum.user,
+    content: {
+      id,
+      personas
+    },
+    userId: user._id,
+    createdAt: new Date()
+  });
 
   ctx.body = {
     user: await User.findById(id)

@@ -6,8 +6,7 @@ const schema = Joi.object({
     japanese: Joi.string().required(),
     english: Joi.string().required()
   }),
-  proofRead: Joi.boolean(),
-  updateMany: Joi.boolean().required()
+  proofRead: Joi.boolean()
 }).required();
 
 export function updateValidation(ctx, next) {

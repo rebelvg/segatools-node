@@ -6,10 +6,10 @@ import { Name } from '../../models/name';
 
 export async function find(ctx: Context, next) {
   const {
-    page = 1,
-    limit = 20,
-    sortBy = 'timeUpdated',
-    sortOrder = -1,
+    page,
+    limit,
+    sortBy,
+    sortOrder,
     search = [],
     searchStrict = [],
     chapterName,
@@ -19,7 +19,8 @@ export async function find(ctx: Context, next) {
     namesStrict = [],
     hideChanged = false,
     hideCompleted = false,
-    hideNotCompleted = false
+    hideNotCompleted = false,
+    proofRead
   } = ctx.state.query;
 
   let query: any = { $and: [] };
@@ -98,7 +99,9 @@ export async function find(ctx: Context, next) {
         });
 
         query['$and'].push({
-          $or: nameIdsToFind.map(nameId => ({ nameIds: nameId }))
+          nameIds: {
+            $in: nameIdsToFind
+          }
         });
       })
     );
@@ -119,7 +122,9 @@ export async function find(ctx: Context, next) {
         });
 
         query['$and'].push({
-          $or: nameIdsToFind.map(nameId => ({ nameIds: nameId }))
+          nameIds: {
+            $in: nameIdsToFind
+          }
         });
       })
     );
@@ -135,6 +140,10 @@ export async function find(ctx: Context, next) {
 
   if (hideNotCompleted) {
     query['$and'].push({ percentDone: 100 });
+  }
+
+  if (proofRead !== undefined) {
+    query['$and'].push({ proofRead });
   }
 
   if (query['$and'].length === 0) {
