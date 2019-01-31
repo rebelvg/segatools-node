@@ -11,7 +11,7 @@ export async function update(ctx: Context, next) {
     request
   } = ctx;
 
-  const { chapterName, updatedLines = [], proofRead, updateMany = true } = request.body;
+  const { chapterName, updatedLines = [], proofRead } = request.body;
 
   const messageRecordById = await Message.findById(messageId);
 
@@ -43,25 +43,21 @@ export async function update(ctx: Context, next) {
     }
   );
 
-  const findQuery: FilterQuery<IMessage> = !updateMany
-    ? {
+  const findQuery: FilterQuery<IMessage> = {
+    'lines.text.japanese': {
+      $in: updatedLines.map(updateLine => updateLine.japanese)
+    },
+    $or: [
+      {
         _id: messageRecordById._id
+      },
+      {
+        proofRead: {
+          $ne: true
+        }
       }
-    : {
-        'lines.text.japanese': {
-          $in: updatedLines.map(updateLine => updateLine.japanese)
-        },
-        $or: [
-          {
-            _id: messageRecordById._id
-          },
-          {
-            proofRead: {
-              $ne: true
-            }
-          }
-        ]
-      };
+    ]
+  };
 
   const allMessages = await Message.findAll(findQuery);
 
