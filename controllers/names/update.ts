@@ -1,12 +1,14 @@
 import { Context } from 'koa';
 
 import { Name } from '../../models/name';
-import { namesCollection } from '../../mongo';
+import { namesCollection, logsCollection } from '../../mongo';
+import { LogTypeEnum } from '../../models/logs';
 
 export async function update(ctx: Context, next) {
   const {
     params: { id: nameId },
-    request
+    request,
+    state: { user }
   } = ctx;
 
   const { english } = request.body;
@@ -31,6 +33,16 @@ export async function update(ctx: Context, next) {
       }
     }
   );
+
+  await logsCollection().insertOne({
+    type: LogTypeEnum.message,
+    content: {
+      id: nameId,
+      english
+    },
+    user: user._id,
+    createdAt: new Date()
+  });
 
   ctx.body = {
     name: await Name.findById(nameId)

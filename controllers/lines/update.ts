@@ -2,11 +2,15 @@ import { Context } from 'koa';
 import * as _ from 'lodash';
 
 import { Message, IMessage } from '../../models/message';
-import { messagesCollection } from '../../mongo';
+import { messagesCollection, logsCollection } from '../../mongo';
 import { FilterQuery } from 'mongodb';
+import { LogTypeEnum } from '../../models/logs';
 
 export async function update(ctx: Context, next) {
-  const { request } = ctx;
+  const {
+    request,
+    state: { user }
+  } = ctx;
 
   const { updatedLines = [] } = request.body;
 
@@ -39,6 +43,19 @@ export async function update(ctx: Context, next) {
       );
     })
   );
+
+  await logsCollection().insertOne({
+    type: LogTypeEnum.message,
+    content: {
+      id: null,
+      chapterName: null,
+      proofRead: null,
+      updatedLines,
+      createdAt: new Date()
+    },
+    user: user._id,
+    createdAt: new Date()
+  });
 
   const messagesUpdated = _.reduce(
     updateOperations,
