@@ -91,6 +91,7 @@ export async function importMessages() {
       fileName: message.Filename,
       chapterName: message.chapter || 'No Chapter',
       lines,
+      proofRead: false,
       timeUpdated: new Date(message.timestamp * 1000)
     });
 

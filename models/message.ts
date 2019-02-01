@@ -38,11 +38,13 @@ export class Message {
     fileName,
     chapterName,
     lines,
+    proofRead,
     timeUpdated
   }: {
     fileName: string;
     chapterName: string;
     lines: ILine[];
+    proofRead: boolean;
     timeUpdated: Date;
   }) {
     this.fileName = fileName;
@@ -50,6 +52,7 @@ export class Message {
     this.lines = lines;
     this.nameIds = this.getNameIds(lines);
     this.percentDone = this.getPercent(lines);
+    this.proofRead = proofRead;
     this.timeUpdated = timeUpdated;
   }
 
@@ -89,6 +92,44 @@ export class Message {
     this.proofRead = proofRead === undefined ? proofRead : this.proofRead;
     this.percentDone = this.getPercent(this.lines);
     this.timeUpdated = new Date();
+  }
+
+  public diffUpdate({
+    chapterName,
+    updatedLines,
+    proofRead
+  }: {
+    chapterName?: string;
+    updatedLines?: ITextLine[];
+    proofRead?: boolean;
+  }) {
+    const diffUpdate: any = {};
+
+    if (chapterName !== undefined && chapterName !== this.chapterName) {
+      diffUpdate['chapterName'] = chapterName;
+    }
+
+    _.forEach(this.lines, (line, index) => {
+      _.forEach(updatedLines, updatedLine => {
+        if (line.text.japanese !== updatedLine.japanese) {
+          return;
+        }
+
+        if (line.text.english === updatedLine.english) {
+          return;
+        }
+
+        diffUpdate[`lines.${index}.text.english`] = updatedLine.english;
+
+        line.text.english = updatedLine.english;
+      });
+    });
+
+    if (proofRead !== undefined && proofRead !== this.proofRead) {
+      diffUpdate['proofRead'] = proofRead;
+    }
+
+    return !_.isEmpty(diffUpdate) ? diffUpdate : null;
   }
 
   public replace({ find, replace }: { find: string; replace: string }): void {
