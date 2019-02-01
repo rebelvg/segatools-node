@@ -120,8 +120,6 @@ export class Message {
         }
 
         diffUpdate[`lines.${index}.text.english`] = updatedLine.english;
-
-        line.text.english = updatedLine.english;
       });
     });
 
@@ -140,6 +138,24 @@ export class Message {
 
       line.text.english = _.replace(line.text.english, find, replace);
     });
+  }
+
+  public diffReplace({ find, replace }: { find: string; replace: string }) {
+    const diffUpdate: any = {};
+
+    _.forEach(this.lines, (line, index) => {
+      if (!_.includes(line.text.english, find)) {
+        return;
+      }
+
+      const newEnglishLine = _.replace(line.text.english, find, replace);
+
+      if (line.text.english !== newEnglishLine) {
+        diffUpdate[`lines.${index}.text.english`] = newEnglishLine;
+      }
+    });
+
+    return !_.isEmpty(diffUpdate) ? diffUpdate : null;
   }
 
   private getNameIds(lines: ILine[]): number[] {
