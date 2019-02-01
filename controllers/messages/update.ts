@@ -29,36 +29,39 @@ export async function update(ctx: Context, next) {
     }
   }
 
+  let messagesUpdated = 0;
+
   const messageModelById = new Message(messageRecordById);
 
-  messageModelById.update({
+  const messageByIdDiffUpdate = messageModelById.diffUpdate({
     chapterName,
+    updatedLines,
     proofRead
   });
 
-  await messagesCollection().updateOne(
-    { _id: messageRecordById._id },
-    {
-      $set: {
-        ...messageModelById
+  if (messageByIdDiffUpdate) {
+    await messagesCollection().updateOne(
+      { _id: messageRecordById._id },
+      {
+        $set: {
+          ...messageByIdDiffUpdate
+        }
       }
-    }
-  );
+    );
+
+    messagesUpdated++;
+  }
 
   const findQuery: FilterQuery<IMessage> = {
     'lines.text.japanese': {
       $in: updatedLines.map(updateLine => updateLine.japanese)
     },
-    $or: [
-      {
-        _id: messageRecordById._id
-      },
-      {
-        proofRead: {
-          $ne: true
-        }
-      }
-    ]
+    _id: {
+      $ne: messageRecordById._id
+    },
+    proofRead: {
+      $ne: true
+    }
   };
 
   const allMessages = await Message.findAll(findQuery);
@@ -67,15 +70,17 @@ export async function update(ctx: Context, next) {
     allMessages.map(messageRecord => {
       const messageModel = new Message(messageRecord);
 
-      messageModel.update({
-        updatedLines
-      });
+      const diffUpdate = messageModel.diffUpdate({ updatedLines });
+
+      if (!diffUpdate) {
+        return;
+      }
 
       return messagesCollection().updateOne(
         { _id: messageRecord._id },
         {
           $set: {
-            ...messageModel
+            ...diffUpdate
           }
         }
       );
@@ -94,7 +99,9 @@ export async function update(ctx: Context, next) {
     createdAt: new Date()
   });
 
+  messagesUpdated += updateOperations.filter(item => !!item).length;
+
   ctx.body = {
-    messagesUpdated: updateOperations.length
+    messagesUpdated
   };
 }

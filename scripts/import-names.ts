@@ -19,7 +19,8 @@ export async function importNames() {
       japanese: name.Japanese,
       english: name.English || '',
       timeUpdated: new Date(name.timestamp * 1000),
-      _id: new ObjectID(name._id['$id'])
+      _id: new ObjectID(name._id['$id']),
+      timeCreated: new Date()
     });
   });
 

@@ -23,16 +23,20 @@ export async function replace(ctx: Context) {
     allMessages.map(messageRecord => {
       const messageModel = new Message(messageRecord);
 
-      messageModel.replace({
+      const diffUpdate = messageModel.diffReplace({
         find: findString,
         replace: replaceString
       });
+
+      if (!diffUpdate) {
+        return;
+      }
 
       return messagesCollection().updateOne(
         { _id: messageRecord._id },
         {
           $set: {
-            ...messageModel
+            ...diffUpdate
           }
         }
       );
@@ -50,6 +54,6 @@ export async function replace(ctx: Context) {
   });
 
   ctx.body = {
-    messagesUpdated: updateOperations.length
+    messagesUpdated: updateOperations.filter(item => !!item).length
   };
 }

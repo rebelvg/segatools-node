@@ -29,15 +29,17 @@ export async function update(ctx: Context, next) {
     allMessages.map(messageRecord => {
       const messageModel = new Message(messageRecord);
 
-      messageModel.update({
-        updatedLines
-      });
+      const diffUpdate = messageModel.diffUpdate({ updatedLines });
+
+      if (!diffUpdate) {
+        return;
+      }
 
       return messagesCollection().updateOne(
         { _id: messageRecord._id },
         {
           $set: {
-            ...messageModel
+            ...diffUpdate
           }
         }
       );
@@ -57,6 +59,6 @@ export async function update(ctx: Context, next) {
   });
 
   ctx.body = {
-    messagesUpdated: updateOperations.length
+    messagesUpdated: updateOperations.filter(item => !!item).length
   };
 }

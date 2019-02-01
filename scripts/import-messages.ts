@@ -91,12 +91,14 @@ export async function importMessages() {
       fileName: message.Filename,
       chapterName: message.chapter || 'No Chapter',
       lines,
+      proofRead: false,
       timeUpdated: new Date(message.timestamp * 1000)
     });
 
     return messagesCollection().insertOne({
       ...messageModel,
-      _id: new ObjectID(message._id['$id'])
+      _id: new ObjectID(message._id['$id']),
+      timeCreated: new Date()
     });
   });
 
