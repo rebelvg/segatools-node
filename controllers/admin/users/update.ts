@@ -22,7 +22,8 @@ export async function update(ctx: Context) {
     { _id: user._id },
     {
       $set: {
-        personas: personas || user.personas
+        personas: personas || user.personas,
+        updatedAt: new Date()
       }
     }
   );
