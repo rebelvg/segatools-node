@@ -39,12 +39,21 @@ export async function findById(ctx: Context, next) {
     })
     .toArray();
 
+  const countPrev = await messagesCollection().countDocuments({
+    _id: { $lt: messageRecord._id },
+    chapterName: messageRecord.chapterName
+  });
+
+  const countAll = await messagesCollection().countDocuments({ chapterName: messageRecord.chapterName });
+
   ctx.body = {
     ...messageRecord,
     names: messageRecord.nameIds.map(nameId => {
       return _.find(nameRecords, { nameId }) || null;
     }),
     prevMessageId: _.get(prevMessageRecord, '_id', null),
-    nextMessageId: _.get(nextMessageRecord, '_id', null)
+    nextMessageId: _.get(nextMessageRecord, '_id', null),
+    posInChapter: countPrev + 1,
+    allInChapter: countAll
   };
 }
