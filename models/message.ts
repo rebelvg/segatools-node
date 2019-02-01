@@ -11,6 +11,7 @@ export interface IMessage {
   nameIds: number[];
   percentDone: number;
   proofRead: boolean;
+  timeCreated: Date;
   timeUpdated: Date;
 }
 
@@ -120,6 +121,8 @@ export class Message {
         }
 
         diffUpdate[`lines.${index}.text.english`] = updatedLine.english;
+
+        line.text.english = updatedLine.english;
       });
     });
 
@@ -127,7 +130,13 @@ export class Message {
       diffUpdate['proofRead'] = proofRead;
     }
 
-    return !_.isEmpty(diffUpdate) ? diffUpdate : null;
+    return !_.isEmpty(diffUpdate)
+      ? {
+          ...diffUpdate,
+          percentDone: this.getPercent(this.lines),
+          timeUpdated: new Date()
+        }
+      : null;
   }
 
   public replace({ find, replace }: { find: string; replace: string }): void {
@@ -138,6 +147,8 @@ export class Message {
 
       line.text.english = _.replace(line.text.english, find, replace);
     });
+
+    this.timeUpdated = new Date();
   }
 
   public diffReplace({ find, replace }: { find: string; replace: string }) {
@@ -155,7 +166,12 @@ export class Message {
       }
     });
 
-    return !_.isEmpty(diffUpdate) ? diffUpdate : null;
+    return !_.isEmpty(diffUpdate)
+      ? {
+          ...diffUpdate,
+          timeUpdated: new Date()
+        }
+      : null;
   }
 
   private getNameIds(lines: ILine[]): number[] {

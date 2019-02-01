@@ -7,6 +7,7 @@ export interface IName {
   nameId: number;
   japanese: string;
   english: string;
+  timeCreated: Date;
   timeUpdated: Date;
 }
 
