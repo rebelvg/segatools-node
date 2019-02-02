@@ -160,10 +160,12 @@ export class Message {
         return;
       }
 
-      const newEnglishLine = _.replace(line.text.english, find, replace);
+      const newEnglishLine = _.replace(line.text.english, new RegExp(`\\b${_.escapeRegExp(find)}\\b`), replace);
 
       if (line.text.english !== newEnglishLine) {
         diffUpdate[`lines.${index}.text.english`] = newEnglishLine;
+
+        line.text.english = newEnglishLine;
       }
     });
 
