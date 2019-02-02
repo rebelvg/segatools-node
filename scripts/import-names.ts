@@ -20,7 +20,8 @@ export async function importNames() {
       english: name.English || '',
       timeUpdated: new Date(name.timestamp * 1000),
       _id: new ObjectID(name._id['$id']),
-      timeCreated: new Date()
+      timeCreated: new Date(),
+      linesCount: 0
     });
   });
 
