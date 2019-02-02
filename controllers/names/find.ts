@@ -5,9 +5,15 @@ import { Context } from 'koa';
 import { Name } from '../../models/name';
 
 export async function find(ctx: Context, next) {
-  const { sortBy, sortOrder, search, hideCompleted = false, hideNotCompleted = false } = ctx.state.query;
+  const { sortBy, sortOrder, nameId, search, hideCompleted = false, hideNotCompleted = false } = ctx.state.query;
 
   let query: any = { $and: [] };
+
+  if (nameId !== undefined) {
+    query['$and'].push({
+      nameId
+    });
+  }
 
   if (search) {
     const searchRegex = new RegExp(_.escapeRegExp(search), 'i');

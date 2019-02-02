@@ -7,6 +7,7 @@ const schema = Joi.object({
   sortOrder: Joi.number()
     .default(-1)
     .valid(-1, 1),
+  nameId: Joi.number(),
   search: Joi.string(),
   hideCompleted: Joi.bool().default(false),
   hideNotCompleted: Joi.bool().default(false)
