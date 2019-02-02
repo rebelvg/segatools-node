@@ -11,6 +11,7 @@ export interface IMessage {
   nameIds: number[];
   percentDone: number;
   proofRead: boolean;
+  linesCount: number;
   timeCreated: Date;
   timeUpdated: Date;
 }

@@ -7,7 +7,7 @@ const schema = Joi.object({
     .max(200),
   sortBy: Joi.string()
     .default('timeUpdated')
-    .valid('fileName', 'percentDone', 'timeUpdated'),
+    .valid('fileName', 'percentDone', 'linesCount', 'timeUpdated'),
   sortOrder: Joi.number()
     .default(-1)
     .valid(-1, 1),

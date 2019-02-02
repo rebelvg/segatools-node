@@ -98,7 +98,8 @@ export async function importMessages() {
     return messagesCollection().insertOne({
       ...messageModel,
       _id: new ObjectID(message._id['$id']),
-      timeCreated: new Date()
+      timeCreated: new Date(),
+      linesCount: 0
     });
   });
 
