@@ -43,17 +43,20 @@ export async function replace(ctx: Context) {
     })
   );
 
+  const messagesUpdated = updateOperations.filter(item => !!item).length;
+
   await logsCollection().insertOne({
     type: LogTypeEnum.replace,
     content: {
       find: findString,
-      replace: replaceString
+      replace: replaceString,
+      messagesUpdated
     },
     userId: user._id,
     createdAt: new Date()
   });
 
   ctx.body = {
-    messagesUpdated: updateOperations.filter(item => !!item).length
+    messagesUpdated
   };
 }

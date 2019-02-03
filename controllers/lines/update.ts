@@ -46,19 +46,22 @@ export async function update(ctx: Context, next) {
     })
   );
 
+  const messagesUpdated = updateOperations.filter(item => !!item).length;
+
   await logsCollection().insertOne({
     type: LogTypeEnum.message,
     content: {
       id: null,
       chapterName: null,
       proofRead: null,
-      updatedLines
+      updatedLines,
+      messagesUpdated
     },
     userId: user._id,
     createdAt: new Date()
   });
 
   ctx.body = {
-    messagesUpdated: updateOperations.filter(item => !!item).length
+    messagesUpdated
   };
 }

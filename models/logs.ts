@@ -13,6 +13,7 @@ interface ILogMessage {
   chapterName: string;
   proofRead: boolean;
   updatedLines: ITextLine[];
+  messagesUpdated: number;
 }
 
 interface ILogName {
@@ -28,6 +29,7 @@ interface ILogUser {
 interface ILogReplace {
   find: string;
   replace: string;
+  messagesUpdated: number;
 }
 
 export interface ILog {

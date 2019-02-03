@@ -87,19 +87,20 @@ export async function update(ctx: Context, next) {
     })
   );
 
+  messagesUpdated += updateOperations.filter(item => !!item).length;
+
   await logsCollection().insertOne({
     type: LogTypeEnum.message,
     content: {
       id: messageId,
       chapterName,
       proofRead,
-      updatedLines
+      updatedLines,
+      messagesUpdated
     },
     userId: user._id,
     createdAt: new Date()
   });
-
-  messagesUpdated += updateOperations.filter(item => !!item).length;
 
   ctx.body = {
     messagesUpdated
