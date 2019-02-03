@@ -4,7 +4,7 @@ import { Context } from 'koa';
 import { Message, ILine, IMessage } from '../../models/message';
 
 export async function uniqueEnglish(ctx: Context, next) {
-  const { page = 1, limit = 20 } = ctx.state.query;
+  const { page = 1, limit = 20, search } = ctx.state.query;
 
   const allMessages = await Message.findAll();
 
@@ -16,7 +16,15 @@ export async function uniqueEnglish(ctx: Context, next) {
     });
   });
 
-  const uniqueLines = _.uniqBy(allLines, 'text.english');
+  let uniqueLines = _.uniqBy(allLines, 'text.english');
+
+  if (search) {
+    const searchRegexp = new RegExp(`\\b${_.escapeRegExp(search)}\\b`);
+
+    uniqueLines = _.filter(uniqueLines, (line: ILine) => {
+      return searchRegexp.test(line.text.english);
+    });
+  }
 
   const filteredLines = _.filter(uniqueLines, line => {
     return line.text.japanese && !!line.text.english;

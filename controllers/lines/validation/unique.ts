@@ -4,7 +4,8 @@ const schema = Joi.object({
   page: Joi.number().default(1),
   limit: Joi.number()
     .default(20)
-    .max(200)
+    .max(200),
+  search: Joi.string()
 }).required();
 
 export function findValidation(ctx, next) {
