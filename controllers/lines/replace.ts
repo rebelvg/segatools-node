@@ -14,7 +14,10 @@ export async function replace(ctx: Context) {
   const { find: findString, replace: replaceString } = request.body;
 
   const findQuery = {
-    'lines.text.english': new RegExp(`\\b${_.escapeRegExp(findString)}\\b`)
+    'lines.text.english': new RegExp(`\\b${_.escapeRegExp(findString)}\\b`),
+    proofRead: {
+      $ne: true
+    }
   };
 
   const allMessages = await Message.findAll(findQuery);
