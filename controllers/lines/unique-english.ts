@@ -39,18 +39,7 @@ export async function uniqueEnglish(ctx: Context, next) {
     total: filteredLines.length
   };
 
-  const lines = _.slice(sortedLines.reverse(), (page - 1) * limit, page * limit)
-    .map(line => _.omit(line, 'speakerId'))
-    .map(line => {
-      return {
-        ...line,
-        messages: _.filter(allMessages, (message: IMessage) => {
-          return !!_.find(message.lines, (foundLine: ILine) => {
-            return foundLine.text.japanese === line.text.japanese;
-          });
-        }).map(message => message._id)
-      };
-    });
+  const lines = _.slice(sortedLines.reverse(), (page - 1) * limit, page * limit).map(line => _.omit(line, 'speakerId'));
 
   ctx.body = {
     lines,
