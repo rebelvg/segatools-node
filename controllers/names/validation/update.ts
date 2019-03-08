@@ -1,7 +1,9 @@
 import * as Joi from 'joi';
 
 const schema = Joi.object({
-  english: Joi.string().required()
+  english: Joi.string()
+    .required()
+    .allow('')
 }).required();
 
 export function updateValidation(ctx, next) {
