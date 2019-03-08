@@ -3,7 +3,9 @@ import * as Joi from 'joi';
 const schema = Joi.object({
   updatedLines: Joi.array().items({
     japanese: Joi.string().required(),
-    english: Joi.string().required()
+    english: Joi.string()
+      .required()
+      .allow(null)
   })
 }).required();
 

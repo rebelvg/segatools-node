@@ -4,7 +4,9 @@ const schema = Joi.object({
   chapterName: Joi.string(),
   updatedLines: Joi.array().items({
     japanese: Joi.string().required(),
-    english: Joi.string().required()
+    english: Joi.string()
+      .required()
+      .allow(null)
   }),
   proofRead: Joi.boolean()
 }).required();
