@@ -19,7 +19,7 @@ export async function uniqueJapanese(ctx: Context, next) {
   let uniqueLines = _.uniqBy(allLines, 'text.japanese');
 
   if (search) {
-    const searchRegexp = new RegExp(`\\b${_.escapeRegExp(search)}\\b`);
+    const searchRegexp = new RegExp(`(?=.*${_.escapeRegExp(search)})`);
 
     uniqueLines = _.filter(uniqueLines, (line: ILine) => {
       return searchRegexp.test(line.text.japanese);

@@ -19,7 +19,7 @@ export async function uniqueEnglish(ctx: Context, next) {
   let uniqueLines = _.uniqBy(allLines, 'text.english');
 
   if (search) {
-    const searchRegexp = new RegExp(`(?=.*${_.escapeRegExp(search)})`);
+    const searchRegexp = new RegExp(`\\b${_.escapeRegExp(search)}\\b`);
 
     uniqueLines = _.filter(uniqueLines, (line: ILine) => {
       return searchRegexp.test(line.text.english);
