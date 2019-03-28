@@ -81,6 +81,6 @@ export async function get(ctx: Context) {
       translated: allEnglishNames.length
     },
     percentDone:
-      ((uniqueEnglishLines.length + allEnglishNames.length) / (uniqueJapaneseLines.length + allNames.length)) * 100
+      ((uniqueEnglishLines.length + allEnglishNames.length) / (uniqueJapaneseLines.length + allNames.length)) * 100 || 0
   };
 }
