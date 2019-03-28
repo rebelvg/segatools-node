@@ -5,6 +5,7 @@ import { Message, IMessage } from '../../models/message';
 import { messagesCollection, logsCollection } from '../../mongo';
 import { FilterQuery } from 'mongodb';
 import { LogTypeEnum } from '../../models/logs';
+import { chapters } from '../chapters/data/chapters';
 
 export async function update(ctx: Context, next) {
   const {
@@ -22,8 +23,6 @@ export async function update(ctx: Context, next) {
   }
 
   if (chapterName) {
-    const chapters: string[] = await messagesCollection().distinct('chapterName', {});
-
     if (!chapters.includes(chapterName)) {
       throw new Error('Bad chapter name.');
     }
