@@ -4,8 +4,8 @@ export const config = {
   },
   server: {
     host: 'localhost',
-    port: 8001,
-    googleCallbackHost: 'http://localhost:8001',
+    port: 8000,
+    googleCallbackHost: 'http://localhost:8000',
     googleRedirect: 'http://localhost:3000'
   }
 };
