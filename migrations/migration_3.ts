@@ -1,4 +1,4 @@
-import { messagesCollection, namesCollection, usersCollection } from '../mongo';
+import { messagesCollection, namesCollection, usersCollection } from '../src/mongo';
 
 export async function up(): Promise<void> {
   await messagesCollection().createIndex('timeUpdated');

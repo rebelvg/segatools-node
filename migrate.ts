@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 
-import { getMongoClient, migrationsCollection } from './mongo';
+import { getMongoClient, migrationsCollection } from './src/mongo';
 
 async function migrate() {
   const mongoClient = await getMongoClient();

@@ -1,8 +1,8 @@
 import * as _ from 'lodash';
 import { ObjectID } from 'mongodb';
 
-import { Message, ILine } from '../models/message';
-import { messagesCollection } from '../mongo';
+import { Message, ILine } from '../src/models/message';
+import { messagesCollection } from '../src/mongo';
 
 interface IMessageImport {
   _id: {

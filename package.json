@@ -2,13 +2,12 @@
   "name": "segatools-node",
   "version": "1.0.0",
   "description": "Segatools Node",
-  "main": "index.ts",
   "scripts": {
     "prepush": "yarn run lint",
     "lint": "tslint \"**/*.ts\" --format verbose && prettier --list-different \"**/*.{ts,js,json,css,md}\"",
     "lint:fix": "tslint \"**/*.ts\" --format verbose --fix && prettier --write \"**/*.{ts,js,json,css,md}\"",
     "migrate": "ts-node migrate.ts",
-    "start": "ts-node .",
+    "start": "ts-node src/index.ts",
     "pre:deploy": "yarn install && yarn run migrate",
     "pm2:setup": "yarn run pre:deploy && pm2 start pm2.json",
     "pm2": "yarn run pre:deploy && pm2 restart segatools-node"
@@ -45,15 +44,15 @@
     "@types/koa-router": "^7.0.37",
     "@types/lodash": "^4.14.119",
     "@types/mongodb": "^3.1.18",
-    "@types/node": "^10.12.18",
+    "@types/node": "^16.11.7",
     "@types/passport-google-oauth": "^1.0.39",
     "@types/uuid": "^3.4.4",
     "eslint": "^5.9.0",
     "husky": "^1.2.0",
     "prettier": "^1.15.2",
-    "ts-node": "^7.0.1",
+    "ts-node": "^10.4.0",
     "tslint": "^5.12.1",
     "tslint-config-prettier": "^1.17.0",
-    "typescript": "^3.2.2"
+    "typescript": "^4.4.4"
   }
 }

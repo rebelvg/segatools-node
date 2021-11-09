@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import { ObjectID } from 'mongodb';
 
-import { namesCollection } from '../mongo';
+import { namesCollection } from '../src/mongo';
 
 /* tslint:disable:no-var-requires */
 const importedNamesData = require('./import/names.json');

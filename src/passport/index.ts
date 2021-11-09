@@ -1,19 +1,16 @@
 import * as passport from 'koa-passport';
 import { OAuth2Strategy } from 'passport-google-oauth';
 
-import { config } from '../config';
+import { CONFIG, GOOGLE } from '../config';
 import { User } from '../models/user';
 import { usersCollection } from '../mongo';
-
-/* tslint:disable:no-var-requires */
-const { web } = require('../google-keys');
 
 passport.use(
   new OAuth2Strategy(
     {
-      clientID: web.client_id,
-      clientSecret: web.client_secret,
-      callbackURL: `${config.server.googleCallbackHost}/users/auth/google/callback`,
+      clientID: GOOGLE.CLIENT_ID,
+      clientSecret: GOOGLE.CLIENT_SECRET,
+      callbackURL: `${CONFIG.SERVER.googleCallbackHost}/users/auth/google/callback`,
       passReqToCallback: true
     },
     async (req, accessToken, refreshToken, profile, done) => {

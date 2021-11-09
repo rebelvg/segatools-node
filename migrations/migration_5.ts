@@ -1,4 +1,4 @@
-import { namesCollection } from '../mongo';
+import { namesCollection } from '../src/mongo';
 
 export async function up(): Promise<void> {
   const allNames = await namesCollection()
