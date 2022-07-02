@@ -4,3 +4,5 @@ node_modules/
 scripts/import/
 config.json
 dist/
+!config.example.json
+config.*.json
