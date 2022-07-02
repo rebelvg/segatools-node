@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/SlowpokeVG/Segatools-node#readme",
   "dependencies": {
+    "@koa/cors": "^3.3.0",
     "joi": "^14.3.0",
     "koa": "^2.6.2",
     "koa-bodyparser": "^4.2.1",

@@ -2,6 +2,7 @@ import * as Koa from 'koa';
 import * as bodyParser from 'koa-bodyparser';
 import * as Router from 'koa-router';
 import * as koaQs from 'koa-qs';
+import * as cors from '@koa/cors';
 
 import { readToken } from './middlewares/read-token';
 
@@ -16,6 +17,8 @@ import { router as chapters } from './routes/chapters';
 export const app = new Koa();
 
 koaQs(app);
+
+app.use(cors());
 
 app.use(bodyParser());
 app.use(readToken);
