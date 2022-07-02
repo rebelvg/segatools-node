@@ -6,7 +6,7 @@
     "prepush": "yarn run lint",
     "lint": "tslint \"**/*.ts\" --format verbose && prettier --list-different \"**/*.{ts,js,json,css,md}\"",
     "lint:fix": "tslint \"**/*.ts\" --format verbose --fix && prettier --write \"**/*.{ts,js,json,css,md}\"",
-    "migrate": "ts-node migrate.ts",
+    "migrate": "node --require ts-node/register migrate.ts",
     "start:prod": "yarn run migrate && node dist/index.js",
     "start": "ts-node src/index.ts",
     "pre:deploy": "yarn install && yarn run migrate",
