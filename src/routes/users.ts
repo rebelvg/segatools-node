@@ -3,7 +3,7 @@ import * as passport from 'koa-passport';
 import { Context } from 'koa';
 
 import { isLoggedIn } from '../middlewares/is-logged-in';
-import { CONFIG } from '../config';
+import { env } from '../env';
 
 export const router = new Router();
 
@@ -37,6 +37,6 @@ router.get(
   (ctx: Context, next) => {
     const { user } = ctx.state;
 
-    ctx.redirect(CONFIG.SERVER.googleRedirect + `/login/?token=${user.token}`);
+    ctx.redirect(env.SERVER.LOGIN_REDIRECT + `/login/?token=${user.token}`);
   }
 );

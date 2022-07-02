@@ -1,0 +1,12 @@
+{
+  "SERVER": {
+    "PORT": 8000,
+    "LOGIN_REDIRECT": "http://localhost:3000"
+  },
+  "DB_URI": "mongodb://USERNAME:PASSWORD@HOST/DATABASE",
+  "GOOGLE": {
+    "CLIENT_ID": "client_id",
+    "CLIENT_SECRET": "client_secret",
+    "CALLBACK_HOST": "http://localhost:8000"
+  }
+}

@@ -1,6 +1,6 @@
 import { MongoClient, Db } from 'mongodb';
 
-import { CONFIG } from './config';
+import { env } from './env';
 import { IMessage } from './models/message';
 import { IName } from './models/name';
 import { IUser } from './models/user';
@@ -12,7 +12,7 @@ let mongoClientDb: Db;
 export async function getMongoClient(): Promise<MongoClient> {
   return new Promise(resolve => {
     MongoClient.connect(
-      CONFIG.DB_URI,
+      env.DB_URI,
       { useNewUrlParser: true, useUnifiedTopology: true },
       async (err, client) => {
         if (err) {

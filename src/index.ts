@@ -2,7 +2,7 @@ import { app } from './app';
 import { getMongoClient } from './mongo';
 import './passport';
 
-import { CONFIG } from './config';
+import { env } from './env';
 
 process.on('unhandledRejection', (reason, p) => {
   throw reason;
@@ -11,7 +11,7 @@ process.on('unhandledRejection', (reason, p) => {
 (async () => {
   await getMongoClient();
 
-  app.listen(CONFIG.SERVER.port, () => {
+  app.listen(env.SERVER.PORT, () => {
     console.log('server is running...');
   });
 })();

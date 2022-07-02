@@ -2,4 +2,5 @@
 .idea/
 node_modules/
 scripts/import/
-config.ts
+config.json
+dist/
