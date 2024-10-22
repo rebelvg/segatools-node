@@ -8,7 +8,8 @@
     "no-string-literal": false,
     "member-ordering": false,
     "no-console": false,
-    "variable-name": [true, "allow-leading-underscore"]
+    "variable-name": [true, "allow-leading-underscore"],
+    "no-unused-expression": false
   },
   "rulesDirectory": [],
   "linterOptions": {
