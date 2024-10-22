@@ -1,5 +1,5 @@
 import { app } from './app';
-import { getMongoClient } from './mongo';
+import { getMongoClient, messagesCollection, namesCollection } from './mongo';
 import './passport';
 import * as fs from 'fs';
 
@@ -18,6 +18,28 @@ if (typeof env.SERVER.PORT === 'string') {
 
 (async () => {
   await getMongoClient();
+
+  new Promise(async () => {
+    while (true) {
+      fs.writeFileSync(
+        `./backup/${Date.now()}.json`,
+        JSON.stringify(
+          {
+            message: await messagesCollection()
+              .find()
+              .toArray(),
+            names: await namesCollection()
+              .find()
+              .toArray()
+          },
+          null,
+          2
+        )
+      );
+
+      await new Promise(resolve => setTimeout(resolve, 24 * 60 * 60 * 1000));
+    }
+  });
 
   app.listen(env.SERVER.PORT, () => {
     console.log('server is running...');

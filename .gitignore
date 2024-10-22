@@ -6,3 +6,4 @@ config.json
 dist/
 !config.example.json
 config.*.json
+backup/*.json
