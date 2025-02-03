@@ -26,7 +26,7 @@ app.use(readToken);
 app.proxy = true;
 
 app.use(async (ctx, next) => {
-  console.log(ctx.url, ctx.method);
+  console.log(ctx.ip, ctx.method, ctx.url);
 
   try {
     await next();
