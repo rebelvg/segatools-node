@@ -4,5 +4,6 @@ import { find } from '../controllers/chapters/find';
 import { isEditor } from '../middlewares/is-editor';
 
 export const router = new Router();
+
 router.use(isEditor);
 router.get('/', find);

@@ -10,6 +10,7 @@ import { find } from '../controllers/messages/find';
 import { update } from '../controllers/messages/update';
 
 export const router = new Router();
+
 router.use(isEditor);
 router.get('/:id', findById);
 router.get('/', findValidation, find);
