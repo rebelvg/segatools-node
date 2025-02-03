@@ -9,6 +9,6 @@ import { find } from '../controllers/names/find';
 import { update } from '../controllers/names/update';
 
 export const router = new Router();
-
+router.use(isEditor);
 router.get('/', findValidation, find);
 router.post('/:id', isEditor, updateValidation, update);

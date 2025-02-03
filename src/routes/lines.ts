@@ -12,7 +12,7 @@ import { replace } from '../controllers/lines/replace';
 import { update } from '../controllers/lines/update';
 
 export const router = new Router();
-
+router.use(isEditor);
 router.get('/', findValidation, uniqueJapanese);
 router.get('/english', findValidation, uniqueEnglish);
 router.post('/replace', isEditor, replaceValidation, replace);
